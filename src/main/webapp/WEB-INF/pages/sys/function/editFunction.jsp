@@ -50,7 +50,7 @@
 	       	<div class="box_inner_03">
 	       		<div class="btn_area_setl btn_area_bg">
 	       			<a href="#" onclick="save('registerForm','${_csrf.parameterName}','${_csrf.token}')" class="btn_01">保存<b></b></a>
-	   				<a href="#" onclick="loadDataGrid("function");window.parent.closeWinForm();" class="btn_01">取消<b></b></a>
+	   				<a href="#" onclick="loadDataGrid('function');window.parent.closeWinForm();" class="btn_01">取消<b></b></a>
 	       		</div>
 	       	</div>
 	    </div>

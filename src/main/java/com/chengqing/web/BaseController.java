@@ -55,7 +55,7 @@ public abstract class BaseController<T extends BaseModel> implements Serializabl
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listJson", method = RequestMethod.POST)
-	public ResData listMajorJson(@ModelAttribute T t ,int rows,int page)
+	public ResData listJson(@ModelAttribute T t ,int rows,int page)
 	{
 		ResData res = new ResData();
 		try {
@@ -74,9 +74,9 @@ public abstract class BaseController<T extends BaseModel> implements Serializabl
 //		 * 列表
 //		 * 
 //		 */
-//		@RequestMapping(value="/listClassify", method = RequestMethod.GET)
-//		public ModelAndView listClassify() {
-//			return new ModelAndView("/shopping/classify/listClassify");
+//		@RequestMapping(value="/list", method = RequestMethod.GET)
+//		public ModelAndView list() {
+//			return new ModelAndView("///list");
 //		}
 //		
 //		/**

@@ -167,7 +167,7 @@
 		update function
 		<set>
 			<if test="null!=functionName and ''!=functionName">functionName = #{functionName},</if>
-			<if test="null!=funcCode and ''!=funcCode">funcCode = #{funcCode},</if>
+			<if test="null!=functionCode and ''!=functionCode">functionCode = #{functionCode},</if>
 			<if test="null!=functionUrl and ''!=functionUrl">functionUrl = #{functionUrl},</if>
 			<if test="null!=parent and null!=parent.id and ''!=parent.id">parentId = #{parent.id},</if>
 			<if test="null!=updateTime">updateTime = #{updateTime},</if>
