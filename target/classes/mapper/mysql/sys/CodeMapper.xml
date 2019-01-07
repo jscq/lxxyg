@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chengqing.model.sys.Code">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" readOnly="true"/>
+	<!-- 使用Memcached分布式缓存 -->
+	<!--  
+	<cache type="org.mybatis.caches.memcached.MemcachedCache" />
+	-->
+
+	<resultMap id="BaseResultMap" type="com.chengqing.model.sys.Code">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="INTEGER" />
+		<result column="createtime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updatetime" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="validfrom" property="validFrom" jdbcType="TIMESTAMP" />
+		<result column="validto" property="validTo" jdbcType="TIMESTAMP" />
+		<result column="createuserid" property="createUserId" jdbcType="VARCHAR" />
+		<result column="updateuserid" property="updateUserId" jdbcType="VARCHAR" />
+		<result column="codeName" property="codeName" jdbcType="VARCHAR" />
+		<result column="codeValue" property="codeValue" jdbcType="VARCHAR" />
+		<result column="codeType" property="codeType" jdbcType="VARCHAR" />
+		<result column="codeDescription" property="codeDescription" jdbcType="VARCHAR" />
+		<result column="parentId" property="parent.id" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id as id,
+		version as version,
+		createtime as createTime,
+		updatetime as updateTime,
+		createuserid as createUserId,
+		updateuserid as updateUserId,
+		validFrom as validFrom,
+		validTo as validTo,
+		codeName as codeName,
+		codeValue as codeValue,
+		codeType as codeType,
+		parentId as parentId,
+		codeDescription as codeDescription
+	</sql>
+	
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+			    and 1 = 1 
+			    <if test="codeName != null"> and codeName like CONCAT('%',#{codeName},'%')</if>
+				<if test="codeType != null"> and codeType like CONCAT('%',#{codeType},'%')</if>
+				and (codeValue is null or codeValue = '')
+			</trim>
+		</where>
+		<if test="sorting != null">order by ${sorting}</if>
+		<if test="start != null and rows != null">
+			limit #{start}, #{rows}
+		</if>
+	</sql>
+	
+	<!-- 查询总数 -->
+	<select id="selectCount" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(id)
+		from code
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 查询 -->
+	<select id="select" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+		'closed' as state,
+		<include refid="Base_Column_List" />
+		from code
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 查询根据codeType -->
+	<select id="selectByCodeType" resultType="java.util.Map" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from code
+		where codeType = #{codeType}
+		and (codeValue is not null and codeValue != '')
+		order by codeValue
+	</select>
+	
+	<!-- 查询子节点，根据一级id -->
+	<select id="selectByParentId" resultType="java.util.Map" parameterType="java.lang.String">
+		select
+		'open' as state,
+		<include refid="Base_Column_List" />
+		from code
+		where parentId = #{id}
+		order by codeValue
+	</select>
+	
+	<!-- 查询 -->
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from code
+		where 1=1
+		<if test="null != codeName and '' != codeName"> and codeName = #{codeName}</if>
+		<if test="null != codeType and '' != codeType"> and codeType = #{codeType}</if>
+		<if test="null != codeValue and '' != codeValue"> and codeValue = #{codeValue}</if>
+	</select>
+	
+	<!-- 查询子节点，根据一级name -->
+	<select id="selectByParentName" resultType="java.util.Map" parameterType="java.lang.String">
+		SELECT code2.id,
+			   code2.codeValue,
+			   code2.codeName
+		FROM CODE code1
+		LEFT JOIN CODE code2 ON code2.parentId = code1.id
+		WHERE code1.codeName = #{codeName}
+	</select>
+	
+	<!-- 查询子节点，根据一级type -->
+	<select id="selectByParentType" resultType="java.util.Map" parameterType="java.lang.String">
+		SELECT code1.id,
+			   code1.codeValue,
+			   code1.codeName
+		FROM CODE code1
+		WHERE code1.codetype = #{codeType} AND (code1.codeValue != '' OR code1.codeValue != NULL )
+	</select>
+	
+	<!-- 查询出所有的一级数据，上级单位 -->
+	<select id="selectAllParent" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from code
+		where codeValue IS NULL OR codeValue = ''
+		order by createTime desc
+	</select>
+	
+	<!-- 验证数据字典 -->
+	<select id="selectCodeCount" resultType="java.lang.Long" parameterType="com.chengqing.model.sys.Code">
+		select count(id)
+		from code
+		where 1 = 1
+		<if test="parent != '' and parent != null "> and parentId = #{parent.id}</if>
+		<if test="codeName != '' and codeName != null "> and codeName = #{codeName}</if>
+		<if test="codeType != '' and codeType != null "> and codeType = #{codeType}</if>
+		<if test="codeValue != '' and codeValue != null "> and codeValue = #{codeValue}</if>
+		<if test="id != null"> and id not in (#{id})</if>
+	</select>
+	
+	<!-- 根据ID查询 -->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from code
+		where id = #{id}
+	</select>
+	
+	<!-- 根据ID删除 -->
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from code
+		where id = #{id}
+	</delete>
+
+	<!-- 删除 (先删子节点) -->
+	<delete id="deleteByParentId" parameterType="java.lang.String">
+		delete from code
+		where parentId = #{id}
+	</delete>
+
+	<!-- 添加 -->	
+	<insert id="insert" parameterType="com.chengqing.model.sys.Code">
+		insert into code(
+			id, 
+			version, 
+			createtime,
+			createuserid,
+			updatetime,
+			updateuserid,
+			validFrom,
+			validTo,
+			codeName,
+			codeValue,
+			codeType,
+			<if test="parent != null and parent != '' ">parentId,</if>
+			codeDescription
+		)
+		values (
+			#{id}, 
+			#{version}, 
+			#{createTime},
+			#{createUserId},
+			#{updateTime},
+			#{updateUserId},
+			#{validFrom},
+			#{validTo},
+			#{codeName},
+			#{codeValue},
+			#{codeType},
+			<if test="parent != null and parent != '' ">#{parent.id},</if>
+			#{codeDescription}
+		)
+	</insert>
+	
+	
+	<!-- 通过ID更新 -->
+	<update id="updateByIdSelective" parameterType="com.chengqing.model.sys.Code">
+		update code
+		<set>
+			<if test="codeName != null">codeName = #{codeName},</if>
+			<if test="codeValue != null">codeValue = #{codeValue},</if>
+			<if test="codeType != null">codeType = #{codeType},</if>
+			<if test="parent != null">parentId = #{parent.id},</if>
+			<if test="codeDescription != null">codeDescription = #{codeDescription}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="updateByOptimisticLock"  parameterType="com.chengqing.model.sys.Code">
+		update code
+		set version = version+1,
+		validTo = #{validTo}
+		where id = #{id} and version = #{version}
+	</update>
+	
+</mapper>

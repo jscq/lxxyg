@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chengqing.model.sys.Function">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" readOnly="true"/>
+	<!-- 使用Memcached分布式缓存 -->
+	<!--  
+	<cache type="org.mybatis.caches.memcached.MemcachedCache" />
+	-->
+
+	<resultMap id="BaseResultMap" type="com.chengqing.model.sys.Function">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="INTEGER" />
+		<result column="sn" property="sn" jdbcType="INTEGER" />
+		<result column="createtime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updatetime" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="validfrom" property="validFrom" jdbcType="TIMESTAMP" />
+		<result column="validto" property="validTo" jdbcType="TIMESTAMP" />
+		<result column="createuserid" property="createUserId" jdbcType="VARCHAR" />
+		<result column="updateuserid" property="updateUserId" jdbcType="VARCHAR" />
+		<result column="functionName" property="functionName" jdbcType="VARCHAR" />
+		<result column="functionCode" property="functionCode" jdbcType="VARCHAR" />
+		<result column="functionUrl" property="functionUrl" jdbcType="VARCHAR" />
+		<result column="parentId" property="parent.id" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id as id,
+		version as version,
+		createTime as createTime,
+		updateTime as updateTime,
+		createUserId as createUserId,
+		updateUserId as updateUserId,
+		validFrom as validFrom,
+		validTo as validTo,
+		sn as sn,
+		functionName as functionName,
+		functionCode as functionCode,
+		parentId as parentId,
+		functionUrl as functionUrl
+	</sql>
+	
+	<!-- 根据ID查询 -->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from function
+		where id = #{id}
+	</select>	
+	
+	<!-- 页面加载菜单查询 -->
+	<select id="selectFunctionByUserId" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select DISTINCT
+			f.id as id,
+			f.parentId as parentId,
+			f.functionName as functionName,
+			f.functionCode as functionCode,
+			f.functionUrl as functionUrl,
+			f.sn as sn 
+		from function f 
+		<if test="null != userId and '' != userId">
+			inner join role_function_relation rfr on(f.id=rfr.funcId) 
+			inner join roles r on(rfr.roleId=r.id) 
+			inner join user_role_relation urr on(r.id=urr.roleId)
+		</if> 
+		where 1=1 
+		<if test="null != userId and '' != userId">and urr.userId = #{userId}</if> 
+		<if test="null != parentId and ''!=parentId">and f.parentId = #{parentId}</if>
+		<if test="null == parentId ">and f.parentId is null</if>
+		order by f.sn,f.createTime desc
+	</select>
+	
+	
+	<!-- 菜单管理list页面查询 -->
+	<select id="select" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from function 
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 菜单管理list页面查询总数 -->
+	<select id="selectCount" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(id)
+		from function
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+				<if test="id != null"> and id = #{id}</if>
+				<if test="null!=parent">
+					<if test="null!=parent.id and ''!=parent.id">
+						and parentId = #{parent.id}
+					</if>
+					<if test="null==parent.id or ''==parent.id ">
+						and (parentId is null or parentId = '')
+					</if>
+				</if>
+				<if test="null!=roleId and ''!=roleId">and id not in (select funcId from role_function_relation where roleId=#{roleId})</if>
+				<if test="null!=functionName and ''!=functionName">and functionName like CONCAT('%',#{functionName},'%')</if>
+				<if test="null!=functionCode and ''!=functionCode">and functionCode like CONCAT('%',#{functionCode},'%')</if>
+			</trim>
+		</where>
+		
+		
+		<if test="start != null and rows != null">
+			order by sn asc
+		
+			limit #{start}, #{rows}
+		</if>
+	</sql>
+	
+	
+	<!-- 根据功能名称查询总数 -->
+	<select id="selectCountByFunctionName" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(id)
+		from function
+		where functionName = #{functionName}
+		<if test="parentId != null and parentId !=''"> and parentId = #{parentId}</if>
+	</select>
+	
+	
+	<!-- 添加 -->	
+	<insert id="insert" parameterType="com.chengqing.model.sys.Function">
+		insert into function(
+			id, 
+			version, 
+			createTime,
+			createUserId,
+			validFrom,
+			validTo,
+			sn,
+			functionName,
+			functionCode,
+			<if test="null!=parent and null!=parent.id and ''!=parent.id">parentId,</if>
+			functionUrl
+		)
+		values (
+			#{id}, 
+			#{version}, 
+			#{createTime},
+			#{createUserId},
+			#{validFrom},
+			#{validTo},
+			#{sn},
+			#{functionName},
+			#{functionCode},
+			<if test="null!=parent and null!=parent.id and ''!=parent.id">#{parent.id},</if>
+			#{functionUrl}
+		)
+	</insert>
+	
+	<!-- 删除 -->
+	<delete id="delete">
+		delete from function
+	</delete>
+	
+	<!-- 根据ID删除 -->
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from function
+		where id = #{id}
+	</delete>
+	
+	<!-- 通过ID更新 -->
+	<update id="updateByIdSelective" parameterType="com.chengqing.model.sys.Function">
+		update function
+		<set>
+			<if test="null!=functionName and ''!=functionName">functionName = #{functionName},</if>
+			<if test="null!=funcCode and ''!=funcCode">funcCode = #{funcCode},</if>
+			<if test="null!=functionUrl and ''!=functionUrl">functionUrl = #{functionUrl},</if>
+			<if test="null!=parent and null!=parent.id and ''!=parent.id">parentId = #{parent.id},</if>
+			<if test="null!=updateTime">updateTime = #{updateTime},</if>
+			<if test="null!=updateUserId and ''!=updateUserId">updateUserId = #{updateUserId},</if>
+			<if test="null!=validFrom">validFrom = #{validFrom},</if>
+			<if test="null!=validTo">validTo = #{validTo},</if>
+			<if test="null!=version">version = #{version},</if>
+			<if test="null!=sn">sn = #{sn},</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	
+</mapper>

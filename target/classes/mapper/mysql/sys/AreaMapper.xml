@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chengqing.model.sys.Area">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" readOnly="true"/>
+	<!-- 使用Memcached分布式缓存 -->
+	<!--  
+	<cache type="org.mybatis.caches.memcached.MemcachedCache" />
+	-->
+
+	<resultMap id="BaseResultMap" type="com.chengqing.model.sys.Area">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="parentId" property="parentId" jdbcType="VARCHAR" />
+		<result column="level" property="level" jdbcType="VARCHAR" />
+		<result column="en" property="en" jdbcType="VARCHAR" />
+		<result column="shortEn" property="shortEn" jdbcType="VARCHAR" />
+		<result column="sn" property="sn" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id as id,
+		name as name,
+		code as code,
+		parentId as parentId,
+		level as level,
+		en as en,
+		shortEn as shortEn,
+		sn as sn
+	</sql>
+	
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+			    and 1 = 1 
+			    <if test=" name != null and '' != name "> and name like CONCAT('%',#{name},'%')</if>
+				<if test=" code != null and '' != code "> and code like CONCAT('%',#{code},'%')</if>
+				and parentId = 0
+			</trim>
+		</where>
+		
+		order by code
+	</sql>
+	
+	<!-- 查询总数 -->
+	<select id="selectCount" resultType="java.lang.Long" parameterType="java.util.Map">
+		select 
+			count(id)
+		from area
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 查询 -->
+	<select id="select" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+		'closed' as state,
+		<include refid="Base_Column_List" />
+		from area
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	
+	<!-- 查询子节点，根据一级id -->
+	<select id="selectByParentId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT 
+			'closed' as state,
+			area.*
+		FROM Area area
+		WHERE area.parentId = #{id}
+		ORDER BY area.code ASC
+	</select>
+	
+	<!-- 查询出所有的一级数据，上级单位 -->
+	<select id="selectAllParent" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from area 
+		where parentId = 0 
+		ORDER BY code ASC
+	</select>
+	
+	<!-- 验证数据字典 -->
+	<select id="selectCodeCount" resultType="java.lang.Long" parameterType="com.chengqing.model.sys.Area">
+		select count(id)
+		from area
+		where 1 = 1
+		<if test=" parentId != '' and parentId != null "> and parentId = #{parentId}</if>
+		
+		and ( name = #{name} or code = #{code} )
+		
+		<if test=" id != null "> and id  = #{id} </if>
+	</select>
+	
+	<!-- 根据ID查询 -->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from area
+		where id = #{id}
+	</select>
+	
+	<!-- 根据ID删除 -->
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from area
+		where id = #{id}
+	</delete>
+
+	<!-- 删除 (先删子节点) -->
+	<delete id="deleteByParentId" parameterType="java.lang.String">
+		delete from area
+		where parentId = #{id}
+	</delete>
+
+	<!-- 添加 -->	
+	<insert id="insert" parameterType="com.chengqing.model.sys.Area">
+		insert into area (
+			id, 
+			name,
+			code,
+			parentId
+		)
+		values (
+			#{id},
+			#{name},
+			#{code},
+			#{parentId}
+		)
+	</insert>
+	
+	
+	<!-- 通过ID更新 -->
+	<update id="updateByIdSelective" parameterType="com.chengqing.model.sys.Area">
+		update area
+		<set>
+			<if test=" name != null ">name = #{name},</if>
+			<if test=" code != null ">code = #{code},</if>
+			<if test=" parentId != null ">parentId = #{parentId}</if>
+		</set>
+		where id = #{id} 
+	</update>
+	
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chengqing.model.sys.Zoning">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" readOnly="true"/>
+	<!-- 使用Memcached分布式缓存 -->
+	<!--  
+	<cache type="org.mybatis.caches.memcached.MemcachedCache" />
+	-->
+
+	<resultMap id="BaseResultMap" type="com.chengqing.model.sys.Zoning">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="province" property="province" jdbcType="VARCHAR" />
+		<result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="county" property="county" jdbcType="VARCHAR" />
+		<result column="street" property="street" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id as id,
+		province as province,
+		city as city,
+		county as county,
+		street as street
+	</sql>
+	
+	
+	<!-- 根据ID删除 -->
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from zoning
+		where id = #{id}
+	</delete>
+
+
+	<!-- 添加 -->	
+	<insert id="insert" parameterType="com.chengqing.model.sys.Zoning">
+		insert into zoning (
+			id, 
+			province,
+			city,
+			county,
+			street
+		)
+		values (
+			#{id},
+			#{province},
+			#{city},
+			#{county},
+			#{street}
+		)
+	</insert>
+	
+	
+	<!-- 通过ID更新 -->
+	<update id="updateByIdSelective" parameterType="com.chengqing.model.sys.Zoning">
+		update area
+		<set>
+			<if test=" province != null ">province = #{province},</if>
+			<if test=" city != null ">city = #{city},</if>
+			<if test=" county != null ">county = #{county},</if>
+			<if test=" street != null ">street = #{street}</if>
+		</set>
+		where id = #{id} 
+	</update>
+	
+</mapper>
