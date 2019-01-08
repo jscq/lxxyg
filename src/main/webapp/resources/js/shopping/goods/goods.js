@@ -4,7 +4,7 @@ function add(url,title,x,y)
 }
 
 //查询
-var searchClassify = function(){
+var searchGoods = function(){
 	var queryParams = {
 		'classify.classifyName' : $("#classifyName").val(),
 		'classify.classifyCode' : $('#classifyCode').val(),
@@ -22,44 +22,42 @@ var searchClassify = function(){
  */
 function save(formId,parameterName,token)
 {
+	console.log($('#'+formId).serialize())
+	
+	
 	//数据有限性判断
 	if (validateSubmit(formId)) {
-			// 功能名称校验 
-			var checkName = verifyClassifyName(parameterName,token);
-			
-			if(checkName){
-				//保存
-				var url = Utils.getRootPath() +'/classify/saveOrUpdate';
-				$.ajax({
-			        type: "POST",
-			        url: url,
-			        data:$('#'+formId).serialize(),
-			        async: false,
-			        dataType: 'json',
-			        error: function(request) {
-			        	$.messager.alert('提示','系统异常,请稍后重新再试!','error');
-			        },
-			        success: function(result) 
-			        {
-			        	var message = "";
-			        	var id = $("#id").val();
-			        	if(id != null && id != undefined && id != ''){
-		        			message = "更新";
-		        		}else{
-		        			message = "保存";
-		        		}
-			        	
-			        	if (null != result && result.status == "OK"){
-			        		$.messager.alert('提示',message + '成功','info',function(){
-			        			loadDataGrid("classify");
-			                	window.parent.closeWinForm();
-			        		});
-			            } else{
-			            	$.messager.alert('提示',message + '失败','error');
-			            }
-			        }
-			    });
-			}
+		//保存
+		var url = Utils.getRootPath() +'/goods/saveOrUpdate';
+		$.ajax({
+	        type: "POST",
+	        url: url,
+	        data:$('#'+formId).serialize(),
+	        async: false,
+	        dataType: 'json',
+	        error: function(request) {
+	        	$.messager.alert('提示','系统异常,请稍后重新再试!','error');
+	        },
+	        success: function(result) 
+	        {
+	        	var message = "";
+	        	var id = $("#id").val();
+	        	if(id != null && id != undefined && id != ''){
+        			message = "更新";
+        		}else{
+        			message = "保存";
+        		}
+	        	
+	        	if (null != result && result.status == "OK"){
+	        		$.messager.alert('提示',message + '成功','info',function(){
+	        			loadDataGrid("goods");
+	                	window.parent.closeWinForm();
+	        		});
+	            } else{
+	            	$.messager.alert('提示',message + '失败','error');
+	            }
+	        }
+	    });
 	}
 }
 
@@ -79,7 +77,7 @@ function edit(){
 		return;
 	}
 	var id = rows[0].id;
-	add(Utils.getRootPath()+'/classify/editClassify?classify.id='+id,'编辑商品分类',850,500); 
+	add(Utils.getRootPath()+'/goods/editGoods?goods.id='+id,'编辑商品',850,500); 
 };
 
   
@@ -107,7 +105,7 @@ function del(parameterName,token){
 				}
 			}
 			
-			var url = Utils.getRootPath() + '/classify/deleteClassify?'+ parameterName + "=" + token;
+			var url = Utils.getRootPath() + '/goods/deleteGoods?'+ parameterName + "=" + token;
 			$.ajax({
 				type : "post",
 				url : url,
@@ -119,7 +117,7 @@ function del(parameterName,token){
 				success : function(result) {
 					if (result.status == "OK") {
 						$.messager.alert('提示', '删除成功', 'info',function(){
-							loadDataGrid("classify");
+							loadDataGrid("goods");
 						});
 					} else if (result.status == "ERROR") {
 						$.messager.alert('提示', '删除失败', 'error');
@@ -130,54 +128,6 @@ function del(parameterName,token){
 	});
 }
 
-
-//验证功能名称唯一性  
-function verifyClassifyName(parameterName,token)
-{
-	var checkFlag = false;
-	var returnFlag = false;
-	// 父节点id
-	var parentId = "";
-	//隐藏功能名称
-	var hiddenClassifyName = $("#hiddenClassifyName").val();
-	var classifyName = $("#classifyName").val();
-	classifyName = classifyName.replace(/(^\s*)|(\s*$)/g, "");
-	if ((hiddenClassifyName=='')||(hiddenClassifyName != '' && hiddenClassifyName != classifyName)) 
-	{
-		checkFlag = true;
-	}else if(hiddenclassifyName != '' && hiddenclassifyName == classifyName)
-	{
-		return true;
-	}
-	
-	if(checkFlag)
-	{
-		if(classifyName!='')
-		{
-
-			$.ajax({
-				type : "post",
-				url : Utils.getRootPath() + '/classify/verifyClassifyName?'+ parameterName + "=" + token,
-				data : {
-					"classify.classifyName" : classifyName
-				},
-				async : false,
-				dataType : 'json',
-				success : function(result) {
-					if (result.status == "OK") 
-					{
-						returnFlag = true;
-					}
-					else if(result.status == "ERROR") 
-					{
-						$.messager.alert('提示', '商品分类已存在，是否继续启用当前分类?', 'warning');
-					}
-				}
-			});
-		}
-	} 
-	return returnFlag;
-}
 
 
 /**
@@ -207,3 +157,105 @@ var selectStock = function(value){
 		$("#stock").hide();
 	}
 }
+
+
+/**
+ * 保存图片
+ * @param obj
+ * @returns
+ */
+function savePic(obj){
+	var imgName = obj.value;
+	var pos = imgName.lastIndexOf(".");
+	var fileName = imgName.substring(pos+1);
+	//处理图片路径
+	imgName = getFileName(imgName);
+	if(fileName == "jpg" || fileName == "JPG" 
+		|| fileName == "jpeg" || fileName == "JPEG" 
+		|| fileName == "png" || fileName == "PNG" 
+		|| fileName == "bmp" || fileName == "BMP" 
+		|| fileName == "gif" || fileName == "GIF"){
+		if(navigator.userAgent.indexOf("MSIE")>0) {//是IE
+			
+			//var version = $.browser.version;
+			$("#upform").ajaxSubmit(function(result){
+				result = result.replace("<pre>","");
+				result = result.replace("<PRE>","");
+				result = result.replace("</pre>","");
+				result = result.replace("</PRE>","");
+				var resultObj = eval('('+result+')');
+	            if (resultObj.msg == "success"){
+	            	$("#supplyAttName").attr("value", resultObj.fileName);
+	            	$("#supplyAttPath").attr("value", resultObj.filePath);
+	            	$("#supplyDocName").attr("value", resultObj.documentName);
+	            	
+	            	$.messager.alert('提示','图片上传成功！','info');
+	            	$('#showPic').window('close');
+	            	
+	            	$("#pmPic").html('');
+	            	var imgPath =  Utils.getBasePath() + "/"+resultObj.filePath.substring(resultObj.filePath.indexOf('uploadPic'))+"/" +  resultObj.fileName;
+	            	var html='<a href="javascript:void(0)" style="color:blue;" onclick=window.open("'+imgPath+'")>【预览】</a><a href="javascript:void(0)" style="color:blue;" onclick="removePic()")>【删除】</a>';
+	            	$('#pmPic').html(html);
+	            } else if(resultObj.msg == "fail"){
+	            	$.messager.alert('提示','图片文件大小不得小于20K或大于5M！','warning');
+	            	file = $("#chooseimg");
+	        		file.after(file.clone());
+	        		file.remove();
+					return;
+	            } else if(resultObj.msg == "error"){
+	            	$.messager.alert('提示','文件解析错误，请重新上传！','warning');
+	            	file = $("#chooseimg" );
+	        		file.after(file.clone());
+	        		file.remove();
+					return;
+	            }
+			});
+		
+		}else{//不是IE
+			
+			$("#upform").ajaxSubmit(function(result){
+				result = result.substring(result.indexOf("{"),result.indexOf("}")+1);
+				var resultObj = eval('('+result+')');
+				
+	            if (resultObj.msg == "success"){
+	            	$("#supplyAttName").attr("value", resultObj.fileName);
+	            	$("#supplyAttPath").attr("value", resultObj.filePath);
+	            	$("#supplyDocName").attr("value", resultObj.documentName);
+	            	
+	            	$.messager.alert('提示','图片上传成功！','info');
+	            	$('#showPic').window('close');
+	            	
+	            	$("#pmPic").html('');
+	            	var imgPath =  Utils.getBasePath() + "/"+resultObj.filePath.substring(resultObj.filePath.indexOf('uploadPic'))+"/" +  resultObj.fileName;
+	            	var html='<a href="javascript:void(0)" style="color:blue;" onclick=window.open("'+imgPath+'")>【预览】</a><a href="javascript:void(0)" style="color:blue;" onclick="removePic()")>【删除】</a>';
+	            	$('#pmPic').html(html);
+	            } else if(resultObj.msg == "fail"){
+	            	$.messager.alert('提示','图片文件大小不得小于20K或大于5M！','warning');
+	            	file = $("#chooseimg");
+	        		file.after(file.clone());
+	        		file.remove();
+					return;
+	            } else if(resultObj.msg == "error"){
+	            	$.messager.alert('提示','文件解析错误，请重新上传！','warning');
+	            	file = $("#chooseimg" );
+	        		file.after(file.clone());
+	        		file.remove();
+					return;
+	            }
+			});
+		}
+		
+	}else{
+		$.messager.alert('提示','请选择一张图片上传！','warning');
+		file = $("#chooseimg");
+		file.after(file.clone());
+		file.remove();
+		return;
+	}
+}
+
+
+function uploadPic(){
+	$("#goodsImage").val("123")
+}
+

@@ -19,12 +19,18 @@ public class Goods extends BaseModel {
 	/**
 	 * 头像
 	 */
-	private String goosImage;
+	private String goodsImage;
 	
 	/**
 	 * 商品名称
 	 */
 	private String goodsName;
+	
+	/**
+	 * 是否有折扣
+	 * 1-有  2-没有
+	 */
+	private String hasDiscount;
 	
 	/**
 	 * 售价
@@ -40,17 +46,25 @@ public class Goods extends BaseModel {
 	 * 原价
 	 */
 	private String goodsOriginalPrice;
-	
-	/**
-	 * 已售
-	 */
-	private String goodsSold;
+
 	
 	
 	/**
 	 * 是否可售
 	 */
 	private String goodsSalable;
+	
+	
+	/**
+	 * 已售
+	 */
+	private String goodsSold;
+
+	
+	/**
+	 * 余量
+	 */
+	private String goodsResidual;
 
 
 	public Classify getClassify() {
@@ -63,13 +77,13 @@ public class Goods extends BaseModel {
 	}
 
 
-	public String getGoosImage() {
-		return goosImage;
+	public String getGoodsImage() {
+		return goodsImage;
 	}
 
 
-	public void setGoosImage(String goosImage) {
-		this.goosImage = goosImage;
+	public void setGoodsImage(String goodsImage) {
+		this.goodsImage = goodsImage;
 	}
 
 
@@ -80,6 +94,16 @@ public class Goods extends BaseModel {
 
 	public void setGoodsName(String goodsName) {
 		this.goodsName = goodsName;
+	}
+
+
+	public String getHasDiscount() {
+		return hasDiscount;
+	}
+
+
+	public void setHasDiscount(String hasDiscount) {
+		this.hasDiscount = hasDiscount;
 	}
 
 
@@ -113,6 +137,16 @@ public class Goods extends BaseModel {
 	}
 
 
+	public String getGoodsSalable() {
+		return goodsSalable;
+	}
+
+
+	public void setGoodsSalable(String goodsSalable) {
+		this.goodsSalable = goodsSalable;
+	}
+
+
 	public String getGoodsSold() {
 		return goodsSold;
 	}
@@ -123,13 +157,13 @@ public class Goods extends BaseModel {
 	}
 
 
-	public String getGoodsSalable() {
-		return goodsSalable;
+	public String getGoodsResidual() {
+		return goodsResidual;
 	}
 
 
-	public void setGoodsSalable(String goodsSalable) {
-		this.goodsSalable = goodsSalable;
+	public void setGoodsResidual(String goodsResidual) {
+		this.goodsResidual = goodsResidual;
 	}
 	
 	

@@ -19,6 +19,10 @@ var loadDataGrid = function(type)
 	{	
 		// 电商管理模块---商品分类
 		$(window.parent.document).contents().find("#iframe")[0].contentWindow.searchClassify();
+	}else if(type=='goods')
+	{	
+		// 电商管理模块---商品
+		$(window.parent.document).contents().find("#iframe")[0].contentWindow.searchGoods();
 	}
 	
 	

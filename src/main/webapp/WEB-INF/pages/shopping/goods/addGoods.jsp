@@ -9,7 +9,7 @@
 	<div class="adjust_box" style="height:420px;">
 	<div class="box_inner">
 	
-	<form class="registerform" id="registerForm" method="post">
+	<form class="registerform" id="registerForm" method="post" enctype="multipart/form-data">
 	
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		<input type="hidden" name="parameterName" id="parameterName" value="${_csrf.parameterName}" />
@@ -20,53 +20,56 @@
 				<tr>
 		        	<th style="width:15%;"><span style="color: red;">*</span>所属分类：</th>
 		            <td style="width:35%;">
-		            	<select name="costTypeSelect" id="costTypeSelect" style="width:90%;vertical-align: middle;">
+		            	<select name="goods.classify.id" id="classifyId" style="width:90%;vertical-align: middle;">
 		            		<option value="">--请选择所属分类--</option>
 		            		<c:forEach items="${listClassify}" var="classify">
-		            			<option value="${classify.classifyName}">--${classify.classifyName}--</option>
+		            			<option value="${classify.id}">--${classify.classifyName}--</option>
 		            		</c:forEach>
 		            	</select>
 		            </td>
-		         </tr> 
-		         <tr>  
+	           </tr> 
+	           <tr>  
 		            <th style="width:15%;"><span style="color: red;">*</span>商品图片：</th>
-		            <td style="width:35%;"><input type="button" name="classify.goosImage" value="点击上传" /></td>
+		            <td style="width:35%;">
+		            	<input type="hidden" id="goodsImage" name="goods.goodsImage" />
+		            	<input type="file" id="pic" value="点击上传" onchange="uploadPic()"/>
+		            </td>
 		       </tr> 
 		       <tr>
 		        	<th style="width:15%;"><span style="color: red;">*</span>商品名称：</th>
-		            <td style="width:35%;"><input type="text" name="classify.goosImage" class="form_text" reg="Require" tip="请填写分类名称" /></td>
+		            <td style="width:35%;"><input type="text" name="goods.goodsName" class="form_text" reg="Require" tip="请填写分类名称" /></td>
 		       </tr>
 		       <tr>
-		      	    <th style="width:15%;"><span style="color: red;">*</span>是否有折扣：</th>
+		      	    <th style="width:15%;">是否有折扣：</th>
 		            <td style="width:35%;">
-		            	<input name="hasDiscount"  id="" type="radio" value="1"  onclick="selectDiscount(this.value)"/>是
+		            	<input name="goods.hasDiscount"  id="hasDiscount" type="radio" value="1"  onclick="selectDiscount(this.value)"/>是
 	            		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	            		<input name="hasDiscount"  id="" type="radio" value="2" checked="checked"   onclick="selectDiscount(this.value)"/>否
+	            		<input name="goods.hasDiscount"  id="hasDiscount" type="radio" value="2" checked="checked"   onclick="selectDiscount(this.value)"/>否
 		            </td>
 		       </tr>
 		       <tr id="goodsOriginalPrice" style="display:none;">
 		       		<th style="width:15%;"><span style="color: red;">*</span>原价：</th>
-		            <td style="width:35%;"><input type="text" name="classify.goosImage" class="form_text" reg="Require"/></td>
+		            <td style="width:35%;"><input type="text" name="goods.goodsOriginalPrice" class="form_text"/></td>
 		       </tr>
 		       <tr>
 		       		<th style="width:15%;"><span style="color: red;">*</span>售价：</th>
-		            <td style="width:35%;"><input type="text" name="classify.goosImage" class="form_text" reg="Require" tip="请填写销售价格" /></td>
+		            <td style="width:35%;"><input type="text" name="goods.goodsPrice" class="form_text" reg="Require" tip="请填写销售价格" /></td>
 		       </tr>
 		       <tr id="discount" style="display:none;">
-		       		<th style="width:15%;"><span style="color: red;">*</span>折扣：</th>
-		            <td style="width:35%;"><span id="zhekou"></span>折</td>
+		       		<th style="width:15%;">折扣：</th>
+		            <td style="width:35%;"><input type="hidden" name="goods.goodsDiscount" /><span id="zhekou"></span>折</td>
 		       </tr>
 		       <tr>
 		      	    <th style="width:15%;"><span style="color: red;">*</span>是否长期销售：</th>
 		            <td style="width:35%;">
-		            		<input name="costType"  id="" type="radio" value="1" checked="checked"  onclick="selectStock(this.value)"/>是
+		            		<input name="goods.goodsSalable"  id="goodsSalable" type="radio" value="1" checked="checked"  onclick="selectStock(this.value)"/>是
 		            		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		            		<input name="costType"  id="" type="radio" value="2"  onclick="selectStock(this.value)"/>否
+		            		<input name="goods.goodsSalable"  id="goodsSalable" type="radio" value="2"  onclick="selectStock(this.value)"/>否
 		            </td>
 		       </tr>
 		       <tr id="stock" style="display:none;">
 		       		<th style="width:15%;"><span style="color: red;">*</span>余量：</th>
-		            <td style="width:35%;"><input type="text" name="classify.goosImage" class="form_text" reg="Require"/></td>
+		            <td style="width:35%;"><input type="text" name="goods.goodsResidual" class="form_text"/></td>
 		       </tr>
 		   	</table>
 	   	</div>

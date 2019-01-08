@@ -2,6 +2,8 @@ package com.chengqing.web.shopping;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +43,7 @@ public class GoodsController  extends BaseController<Goods>{
     public void initDepartment(WebDataBinder binder){
         binder.setFieldDefaultPrefix("goods.");
     }
+	
     @InitBinder("shoppingQuery")
     public void initSysQuery(WebDataBinder binder){
         binder.setFieldDefaultPrefix("shoppingQuery.");
@@ -55,7 +58,6 @@ public class GoodsController  extends BaseController<Goods>{
     protected BaseService<Goods> getBaseService() {
 		return goodsService;
 	}
-    
     
 	 /**  
 	 * 列表
@@ -72,7 +74,7 @@ public class GoodsController  extends BaseController<Goods>{
 	 */
 	@RequestMapping(value="/addGoods", method = RequestMethod.GET)
 	public ModelAndView addGoods(Model model) {
-		// 查询所以没有下架的商品分类
+		// 查询所有没有下架的商品分类
 		Classify classify = new Classify();
 		classify.setClassifyStatus(0);
 		List<Classify> listClassify = null;
@@ -94,11 +96,16 @@ public class GoodsController  extends BaseController<Goods>{
 	 */
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
 	public ModelAndView edit(@ModelAttribute  Goods goods,Model model) {
+		// 查询所有没有下架的商品分类
+		Classify classify = new Classify();
+		classify.setClassifyStatus(0);
+		List<Classify> listClassify = null;
 		try {
-			
+			listClassify = classifyService.selectList(classify);
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
+		model.addAttribute("listClassify", listClassify);
 		return new ModelAndView("/shopping/goods/edit");
 	}
 	
@@ -109,11 +116,12 @@ public class GoodsController  extends BaseController<Goods>{
 	 */
 	@ResponseBody
 	@RequestMapping(value="/saveOrUpdate", method = RequestMethod.POST)
-	public Result saveOrUpdate(@ModelAttribute  Goods goods) {
+	public Result saveOrUpdate(@ModelAttribute Goods goods) {
 		Result result = new Result();
 		try {
 			if(null != goods){
-				
+				// 保存数据
+				goodsService.saveOrUpdate(goods);
 			}else{
 				return new Result(Status.ERROR,"数据异常");
 			}
