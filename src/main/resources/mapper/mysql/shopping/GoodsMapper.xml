@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chengqing.model.shopping.Goods">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" readOnly="true"/>
+	<!-- 使用Memcached分布式缓存 -->
+	<!--  
+	<cache type="org.mybatis.caches.memcached.MemcachedCache" />
+	-->
+
+	<resultMap id="BaseResultMap" type="com.chengqing.model.shopping.Goods">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="INTEGER" />
+		<result column="sn" property="sn" jdbcType="INTEGER" />
+		<result column="createtime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updatetime" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="validfrom" property="validFrom" jdbcType="TIMESTAMP" />
+		<result column="validto" property="validTo" jdbcType="TIMESTAMP" />
+		<result column="createuserid" property="createUserId" jdbcType="VARCHAR" />
+		<result column="updateuserid" property="updateUserId" jdbcType="VARCHAR" />
+		<result column="classifyName" property="classifyName" jdbcType="VARCHAR" />
+		<result column="classifyCode" property="classifyCode" jdbcType="VARCHAR" />
+		<result column="classifyStatus" property="classifyStatus" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id as id,
+		version as version,
+		createTime as createTime,
+		updateTime as updateTime,
+		createUserId as createUserId,
+		updateUserId as updateUserId,
+		validFrom as validFrom,
+		validTo as validTo,
+		sn as sn,
+		classifyName as classifyName,
+		classifyCode as classifyCode,
+		classifyStatus as classifyStatus
+	</sql>
+	
+	<!-- 根据ID查询 -->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from classify
+		where id = #{id}
+	</select>	
+	
+	<!-- 页面加载商品分类查询 -->
+	<select id="selectClassifyByUserId" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+			f.id as id,
+			f.classifyName as classifyName,
+			f.classifyCode as classifyCode,
+			f.classifyStatus as classifyStatus,
+			f.sn as sn 
+		from classify f 
+		where 1=1 
+		order by f.sn desc
+	</select>
+	
+	
+	<!-- 商品分类list页面查询 -->
+	<select id="select" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from classify 
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 商品分类list页面查询总数 -->
+	<select id="selectCount" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(id)
+		from classify
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+				<if test="id != null"> and id = #{id}</if>
+				<if test="null!=classifyName and ''!=classifyName">and classifyName like CONCAT('%',#{classifynName},'%')</if>
+				<if test="null!=classifyCode and ''!=classifyCode">and classifyCode like CONCAT('%',#{classifyCode},'%')</if>
+			</trim>
+		</where>
+		
+		
+		<if test="start != null and rows != null">
+			order by sn asc
+		
+			limit #{start}, #{rows}
+		</if>
+	</sql>
+	
+	
+	<!-- 根据商品分类名称查询总数 -->
+	<select id="selectCountByClassifyName" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(id)
+		from classify
+		where classifyName = #{classifyName}
+	</select>
+	
+	
+	<!-- 添加 -->	
+	<insert id="insert" parameterType="com.chengqing.model.shopping.Classify">
+		insert into classify(
+			id, 
+			version, 
+			createTime,
+			createUserId,
+			validFrom,
+			validTo,
+			sn,
+			classifyName,
+			classifyCode,
+			classifyStatus
+		)
+		values (
+			#{id}, 
+			#{version}, 
+			#{createTime},
+			#{createUserId},
+			#{validFrom},
+			#{validTo},
+			#{sn},
+			#{classifyName},
+			#{classifyCode},
+			#{classifyStatus}
+		)
+	</insert>
+	
+	<!-- 删除 -->
+	<delete id="delete">
+		delete from classify
+	</delete>
+	
+	<!-- 根据ID删除 -->
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from classify
+		where id = #{id}
+	</delete>
+	
+	<!-- 通过ID更新 -->
+	<update id="updateByIdSelective" parameterType="com.chengqing.model.shopping.Classify">
+		update classify
+		<set>
+			classifyName = #{classifyName},
+			classifyCode = #{classifyCode},
+			classifyStatus = #{classifyStatus},
+			sn = #{sn},
+			<if test="null!=updateTime">updateTime = #{updateTime},</if>
+			<if test="null!=updateUserId and ''!=updateUserId">updateUserId = #{updateUserId},</if>
+			<if test="null!=validFrom">validFrom = #{validFrom},</if>
+			<if test="null!=validTo">validTo = #{validTo},</if>
+			<if test="null!=version">version = #{version},</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	
+</mapper>
