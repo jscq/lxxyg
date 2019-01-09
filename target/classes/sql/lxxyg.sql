@@ -111,6 +111,33 @@ CREATE TABLE `function` (
 
 insert  into `function`(`id`,`validFrom`,`validTo`,`createTime`,`createUserId`,`updateTime`,`updateUserId`,`version`,`sn`,`functionName`,`functionCode`,`parentId`,`functionUrl`) values ('1',NULL,NULL,'2016-12-21 19:49:22',NULL,NULL,NULL,NULL,1,'系统管理','XTGL',NULL,NULL),('2',NULL,NULL,'2016-12-21 19:49:22',NULL,NULL,NULL,NULL,1,'菜单管理','CDGL','1','/function/listFunction'),('3f0eff6294ef42a5ad71c259ca097775',NULL,NULL,'2019-01-06 12:01:52',NULL,NULL,NULL,0,1,'商品分类','SPFL','d4d091835ea54302b9788744ff998901','/classify/listClassify'),('90a1e0c43dd645b487a6c18b059221ba',NULL,NULL,'2016-12-21 19:49:22',NULL,NULL,NULL,0,2,'数据字典','SJZD','1','/code/listCode'),('d4d091835ea54302b9788744ff998901',NULL,NULL,'2019-01-06 12:01:01',NULL,NULL,NULL,0,2,'乐享管理','LXDL',NULL,'');
 
+
+DROP TABLE IF EXISTS `goods`;
+
+CREATE TABLE `goods` (
+  `id` VARCHAR(32) NOT NULL,
+  `validFrom` DATETIME DEFAULT NULL,
+  `validTo` DATETIME DEFAULT NULL,
+  `createTime` DATETIME DEFAULT NULL,
+  `createUserId` VARCHAR(32) DEFAULT NULL,
+  `updateTime` DATETIME DEFAULT NULL,
+  `updateUserId` VARCHAR(32) DEFAULT NULL,
+  `version` INT(11) DEFAULT NULL,
+  `sn` INT(11) DEFAULT NULL,
+  `classifyId` VARCHAR(255) DEFAULT NULL,
+  `goodsImage` VARCHAR(255) DEFAULT NULL,
+  `goodsName` VARCHAR(255) DEFAULT NULL,
+  `hasDiscount` INT(11),
+  `goodsPrice` DOUBLE,
+  `goodsDiscount` DOUBLE,
+  `goodsOriginalPrice` DOUBLE,
+  `goodsSalable` INT(11),
+  `goodsSold` DOUBLE,
+  `goodsResidual` DOUBLE,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

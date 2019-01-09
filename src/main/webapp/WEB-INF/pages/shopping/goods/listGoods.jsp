@@ -64,7 +64,7 @@ $(function(){
 		striped: true, //奇偶行颜色不同
 		cache: false,
 		remoteSort: false,
-		url:"<%=basePath%>/Goods/listGoodsJson?"+parameterName+"="+token+"&time="+new Date(), //数据来源
+		url:"<%=basePath%>/goods/listJson?"+parameterName+"="+token+"&time="+new Date(), //数据来源
 		queryParams:{
 			'Goods.GoodsName':$('#GoodsName').val(), // 分类名称
 			'Goods.GoodsCode':$('#GoodsCode').val(), // 分类编码
@@ -79,13 +79,41 @@ $(function(){
 				
 				return "height:35px;";
 			}}, //显示复选框
-			{field:'GoodsName',title:'商品分类名称',width:'18%',sortable:true},
-			{field:'GoodsCode',title:'商品分类编码',width:'18%',sortable:true},
-			{field:'GoodsStatus',title:'上下架状态',width:'18%',sortable:true,formatter:function(value,rec){
-				return value == 0 ? "上架" : "已下架"
+			{field:'classifyName',title:'商品分类',width:'10%',sortable:true},
+			{field:'goodsName',title:'商品名称',width:'10%',sortable:true},
+			{field:'goodsImage',title:'商品图片',width:'10%',sortable:true,formatter:function(value,rec){
+				return "点击查看";
 			}},
-			{field:'sn',title:'排序号',width:'18%',sortable:true},
-			{field:'createTime',title:'创建时间',width:'18%',sortable:true,formatter:formatterDateByM}
+			{field:'hasDiscount',title:'是否有折扣',width:'5%',sortable:true,formatter:function(value,rec){
+				return value == 1 ? "有" : "没有"
+			}},
+			{field:'goodsOriginalPrice',title:'原价(元)',width:'5%',sortable:true,formatter:function(value,rec){
+				if(rec.hasDiscount == 1){
+					return rec.goodsOriginalPrice;
+				}else{
+					return "-";
+				}
+			}},
+			{field:'goodsPrice',title:'售价(元)',width:'5%',sortable:true},
+			{field:'goodsDiscount',title:'折扣',width:'5%',sortable:true,formatter:function(value,rec){
+				if(rec.hasDiscount == 1){
+					return rec.goodsDiscount;
+				}else{
+					return "-";
+				}
+			}},
+			{field:'goodsSalable',title:'是否长期销售',width:'5%',sortable:true,formatter:function(value,rec){
+				return value == 1 ? "是" : "否"
+			}},
+			{field:'goodsSold',title:'已售',width:'5%',sortable:true},
+			{field:'goodsResidual',title:'余量',width:'5%',sortable:true,formatter:function(value,rec){
+				if(rec.goodsSalable == 1){
+					return "999";
+				}else{
+					return rec.goodsResidual;
+				}
+			}},
+			{field:'createTime',title:'创建时间',width:'10%',sortable:true,formatter:formatterDateByM}
 		]],
 		toolbar:'#tb',
 		onLoadSuccess:function(){

@@ -47,17 +47,17 @@
 	            		<input name="goods.hasDiscount"  id="hasDiscount" type="radio" value="2" checked="checked"   onclick="selectDiscount(this.value)"/>否
 		            </td>
 		       </tr>
-		       <tr id="goodsOriginalPrice" style="display:none;">
+		       <tr id="originalPrice" style="display:none;">
 		       		<th style="width:15%;"><span style="color: red;">*</span>原价：</th>
-		            <td style="width:35%;"><input type="text" name="goods.goodsOriginalPrice" class="form_text"/></td>
+		            <td style="width:35%;"><input type="text" name="goods.goodsOriginalPrice" id="goodsOriginalPrice" onblur="jisuanZheKou()" class="form_text"/></td>
 		       </tr>
 		       <tr>
 		       		<th style="width:15%;"><span style="color: red;">*</span>售价：</th>
-		            <td style="width:35%;"><input type="text" name="goods.goodsPrice" class="form_text" reg="Require" tip="请填写销售价格" /></td>
+		            <td style="width:35%;"><input type="text" name="goods.goodsPrice" id="goodsPrice" onblur="jisuanZheKou()" class="form_text" reg="Require" tip="请填写销售价格" /></td>
 		       </tr>
 		       <tr id="discount" style="display:none;">
 		       		<th style="width:15%;">折扣：</th>
-		            <td style="width:35%;"><input type="hidden" name="goods.goodsDiscount" /><span id="zhekou"></span>折</td>
+		            <td style="width:35%;"><input type="hidden" name="goods.goodsDiscount" id="goodsDiscount" /><span id="zhekou"></span>折</td>
 		       </tr>
 		       <tr>
 		      	    <th style="width:15%;"><span style="color: red;">*</span>是否长期销售：</th>

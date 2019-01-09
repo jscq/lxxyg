@@ -12,5 +12,7 @@ import com.chengqing.service.base.BaseService;
  *
  */
 public interface GoodsService  extends BaseService<Goods>  {
+	
+	
 
 }

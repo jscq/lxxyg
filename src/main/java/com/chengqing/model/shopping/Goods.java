@@ -30,41 +30,40 @@ public class Goods extends BaseModel {
 	 * 是否有折扣
 	 * 1-有  2-没有
 	 */
-	private String hasDiscount;
+	private int hasDiscount;
 	
 	/**
 	 * 售价
 	 */
-	private String goodsPrice;
+	private double goodsPrice;
 	
 	/**
 	 * 折扣
 	 */
-	private String goodsDiscount;
+	private double goodsDiscount;
 	
 	/**
 	 * 原价
 	 */
-	private String goodsOriginalPrice;
+	private double goodsOriginalPrice;
 
-	
-	
 	/**
-	 * 是否可售
+	 * 是否长期可售
+	 * 1-是    2-否
 	 */
-	private String goodsSalable;
+	private int goodsSalable;
 	
 	
 	/**
 	 * 已售
 	 */
-	private String goodsSold;
+	private double goodsSold;
 
 	
 	/**
 	 * 余量
 	 */
-	private String goodsResidual;
+	private double goodsResidual;
 
 
 	public Classify getClassify() {
@@ -97,75 +96,72 @@ public class Goods extends BaseModel {
 	}
 
 
-	public String getHasDiscount() {
+	public int getHasDiscount() {
 		return hasDiscount;
 	}
 
 
-	public void setHasDiscount(String hasDiscount) {
+	public void setHasDiscount(int hasDiscount) {
 		this.hasDiscount = hasDiscount;
 	}
 
 
-	public String getGoodsPrice() {
+	public double getGoodsPrice() {
 		return goodsPrice;
 	}
 
 
-	public void setGoodsPrice(String goodsPrice) {
+	public void setGoodsPrice(double goodsPrice) {
 		this.goodsPrice = goodsPrice;
 	}
 
 
-	public String getGoodsDiscount() {
+	public double getGoodsDiscount() {
 		return goodsDiscount;
 	}
 
 
-	public void setGoodsDiscount(String goodsDiscount) {
+	public void setGoodsDiscount(double goodsDiscount) {
 		this.goodsDiscount = goodsDiscount;
 	}
 
 
-	public String getGoodsOriginalPrice() {
+	public double getGoodsOriginalPrice() {
 		return goodsOriginalPrice;
 	}
 
 
-	public void setGoodsOriginalPrice(String goodsOriginalPrice) {
+	public void setGoodsOriginalPrice(double goodsOriginalPrice) {
 		this.goodsOriginalPrice = goodsOriginalPrice;
 	}
 
 
-	public String getGoodsSalable() {
+	public int getGoodsSalable() {
 		return goodsSalable;
 	}
 
 
-	public void setGoodsSalable(String goodsSalable) {
+	public void setGoodsSalable(int goodsSalable) {
 		this.goodsSalable = goodsSalable;
 	}
 
 
-	public String getGoodsSold() {
+	public double getGoodsSold() {
 		return goodsSold;
 	}
 
 
-	public void setGoodsSold(String goodsSold) {
+	public void setGoodsSold(double goodsSold) {
 		this.goodsSold = goodsSold;
 	}
 
 
-	public String getGoodsResidual() {
+	public double getGoodsResidual() {
 		return goodsResidual;
 	}
 
 
-	public void setGoodsResidual(String goodsResidual) {
+	public void setGoodsResidual(double goodsResidual) {
 		this.goodsResidual = goodsResidual;
 	}
-	
-	
-	
 }

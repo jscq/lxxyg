@@ -2,8 +2,6 @@ package com.chengqing.web.shopping;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -94,18 +92,22 @@ public class GoodsController  extends BaseController<Goods>{
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value="/edit", method = RequestMethod.GET)
+	@RequestMapping(value="/editGoods", method = RequestMethod.GET)
 	public ModelAndView edit(@ModelAttribute  Goods goods,Model model) {
 		// 查询所有没有下架的商品分类
 		Classify classify = new Classify();
 		classify.setClassifyStatus(0);
+		
 		List<Classify> listClassify = null;
 		try {
 			listClassify = classifyService.selectList(classify);
+			
+			goods = goodsService.selectById(goods.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		model.addAttribute("listClassify", listClassify);
+		model.addAttribute("goods", goods);
 		return new ModelAndView("/shopping/goods/edit");
 	}
 	
@@ -134,20 +136,18 @@ public class GoodsController  extends BaseController<Goods>{
 	
 	
 	/**  
-	 * ---删除
+	 * 商品管理---删除
 	 *
 	 */
 	@ResponseBody
-	@RequestMapping(value="/delete", method = RequestMethod.GET)
-	public Result delete(@ModelAttribute  Goods goods) {
-		Result result = new Result();
+	@RequestMapping(value="/deleteGoods", method = RequestMethod.POST)
+	public Result delete(String ids) {
 		try {
-			
-			result.setStatus(Status.OK);
+			goodsService.deleteByIds(ids);
 		} catch (Exception e) {
 			return new Result(Status.ERROR,e.getMessage());
 		}
-		return result;
+		return new Result(Status.OK,"");
 	}
 	
 }

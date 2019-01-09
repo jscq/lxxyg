@@ -17,60 +17,62 @@
 		<result column="validto" property="validTo" jdbcType="TIMESTAMP" />
 		<result column="createuserid" property="createUserId" jdbcType="VARCHAR" />
 		<result column="updateuserid" property="updateUserId" jdbcType="VARCHAR" />
-		<result column="classifyName" property="classifyName" jdbcType="VARCHAR" />
-		<result column="classifyCode" property="classifyCode" jdbcType="VARCHAR" />
-		<result column="classifyStatus" property="classifyStatus" jdbcType="INTEGER" />
+		<result column="classifyId" property="classify.id" jdbcType="VARCHAR" />
+		<result column="goodsImage" property="goodsImage" jdbcType="VARCHAR" />
+		<result column="goodsName" property="goodsName" jdbcType="VARCHAR" />
+		<result column="hasDiscount" property="hasDiscount" jdbcType="INTEGER" />
+		<result column="goodsPrice" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="goodsDiscount" property="goodsDiscount" jdbcType="DOUBLE" />
+		<result column="goodsOriginalPrice" property="goodsOriginalPrice" jdbcType="DOUBLE" />
+		<result column="goodsSalable" property="goodsSalable" jdbcType="INTEGER" />
+		<result column="goodsSold" property="goodsSold" jdbcType="DOUBLE" />
+		<result column="goodsResidual" property="goodsResidual" jdbcType="DOUBLE" />
 	</resultMap>
 	
 	<sql id="Base_Column_List">
-		id as id,
-		version as version,
-		createTime as createTime,
-		updateTime as updateTime,
-		createUserId as createUserId,
-		updateUserId as updateUserId,
-		validFrom as validFrom,
-		validTo as validTo,
-		sn as sn,
-		classifyName as classifyName,
-		classifyCode as classifyCode,
-		classifyStatus as classifyStatus
+		a.id as id,
+		a.version as version,
+		a.createTime as createTime,
+		a.updateTime as updateTime,
+		a.createUserId as createUserId,
+		a.updateUserId as updateUserId,
+		a.validFrom as validFrom,
+		a.validTo as validTo,
+		a.sn as sn,
+		a.classifyId as classifyId,
+		b.classifyName as classifyName,
+		a.goodsImage as goodsImage,
+		a.goodsName as goodsName,
+		a.hasDiscount as hasDiscount,
+		a.goodsPrice as goodsPrice,
+		a.goodsDiscount as goodsDiscount,
+		a.goodsOriginalPrice as goodsOriginalPrice,
+		a.goodsSalable as goodsSalable,
+		a.goodsSold as goodsSold,
+		a.goodsResidual as goodsResidual
 	</sql>
 	
 	<!-- 根据ID查询 -->
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
 		select
 		<include refid="Base_Column_List" />
-		from classify
-		where id = #{id}
+		from goods a
+		where a.id = #{id}
 	</select>	
 	
-	<!-- 页面加载商品分类查询 -->
-	<select id="selectClassifyByUserId" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select 
-			f.id as id,
-			f.classifyName as classifyName,
-			f.classifyCode as classifyCode,
-			f.classifyStatus as classifyStatus,
-			f.sn as sn 
-		from classify f 
-		where 1=1 
-		order by f.sn desc
-	</select>
-	
-	
-	<!-- 商品分类list页面查询 -->
-	<select id="select" resultMap="BaseResultMap" parameterType="java.util.Map">
+	<!-- 商品list页面查询 -->
+	<select id="select" resultType="java.util.Map" parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
-		from classify 
+		from goods a
+		left join classify b on a.classifyId = b.id
 		<include refid="Base_Where_Clause" />
 	</select>
 	
 	<!-- 商品分类list页面查询总数 -->
 	<select id="selectCount" resultType="java.lang.Long" parameterType="java.util.Map">
 		select count(id)
-		from classify
+		from goods
 		<include refid="Base_Where_Clause" />
 	</select>
 	
@@ -85,24 +87,15 @@
 		
 		
 		<if test="start != null and rows != null">
-			order by sn asc
+			order by createTime desc
 		
 			limit #{start}, #{rows}
 		</if>
 	</sql>
-	
-	
-	<!-- 根据商品分类名称查询总数 -->
-	<select id="selectCountByClassifyName" resultType="java.lang.Long" parameterType="java.util.Map">
-		select count(id)
-		from classify
-		where classifyName = #{classifyName}
-	</select>
-	
-	
+		
 	<!-- 添加 -->	
 	<insert id="insert" parameterType="com.chengqing.model.shopping.Classify">
-		insert into classify(
+		insert into goods(
 			id, 
 			version, 
 			createTime,
@@ -110,9 +103,16 @@
 			validFrom,
 			validTo,
 			sn,
-			classifyName,
-			classifyCode,
-			classifyStatus
+			classifyId,
+			goodsImage,
+			goodsName,
+			hasDiscount,
+			goodsPrice,
+			goodsDiscount,
+			goodsOriginalPrice,
+			goodsSalable,
+			goodsSold,
+			goodsResidual
 		)
 		values (
 			#{id}, 
@@ -122,31 +122,44 @@
 			#{validFrom},
 			#{validTo},
 			#{sn},
-			#{classifyName},
-			#{classifyCode},
-			#{classifyStatus}
+			#{classify.id},
+			#{goodsImage},
+			#{goodsName},
+			#{hasDiscount},
+			#{goodsPrice},
+			#{goodsDiscount},
+			#{goodsOriginalPrice},
+			#{goodsSalable},
+			#{goodsSold},
+			#{goodsResidual}
 		)
 	</insert>
 	
 	<!-- 删除 -->
 	<delete id="delete">
-		delete from classify
+		delete from goods
 	</delete>
 	
 	<!-- 根据ID删除 -->
 	<delete id="deleteById" parameterType="java.lang.String">
-		delete from classify
+		delete from goods
 		where id = #{id}
 	</delete>
 	
 	<!-- 通过ID更新 -->
 	<update id="updateByIdSelective" parameterType="com.chengqing.model.shopping.Classify">
-		update classify
+		update goods
 		<set>
-			classifyName = #{classifyName},
-			classifyCode = #{classifyCode},
-			classifyStatus = #{classifyStatus},
-			sn = #{sn},
+			classifyId = #{classify.id},
+			goodsImage = #{goodsImage},
+			goodsName = #{goodsName},
+			hasDiscount = #{hasDiscount},
+			goodsPrice = #{goodsPrice},
+			goodsDiscount = #{goodsDiscount},
+			goodsOriginalPrice = #{goodsOriginalPrice},
+			goodsSalable = #{goodsSalable},
+			goodsSold = #{goodsSold},
+			goodsResidual = #{goodsResidual},
 			<if test="null!=updateTime">updateTime = #{updateTime},</if>
 			<if test="null!=updateUserId and ''!=updateUserId">updateUserId = #{updateUserId},</if>
 			<if test="null!=validFrom">validFrom = #{validFrom},</if>

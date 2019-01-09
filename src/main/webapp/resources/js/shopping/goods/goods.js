@@ -134,18 +134,33 @@ function del(parameterName,token){
  * 折扣选择
  */
 var selectDiscount = function(value){
+	
+	$("#zhekou").text("")
+	$("#goodsOriginalPrice").val("")
+	$("#goodsDiscount").val("")
+	
 	if(value == 1){
-		$("#goodsOriginalPrice").show();
+		$("#originalPrice").show();
 		$("#discount").show();
-		
-		$("#zhekou").text("98")
-		
 	}else if(value == 2){
-		$("#goodsOriginalPrice").hide();
+		$("#originalPrice").hide();
 		$("#discount").hide();
 	}
 }
 
+/**
+ * 计算折扣
+ * @returns
+ */
+function jisuanZheKou(){
+	var goodsOriginalPrice = $("#goodsOriginalPrice").val()
+	var goodsPrice = $("#goodsPrice").val()
+
+	if(goodsOriginalPrice != '' && goodsOriginalPrice != 0  && goodsPrice != '' && goodsPrice != 0 ){
+		$("#zhekou").text(Math.ceil(goodsPrice * 10/goodsOriginalPrice))
+		$("#goodsDiscount").val(Math.ceil(goodsOriginalPrice * 10/goodsPrice))
+	}
+}
 
 /**
  *  切换余量
