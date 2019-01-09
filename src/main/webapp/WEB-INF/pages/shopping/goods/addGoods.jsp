@@ -9,7 +9,7 @@
 	<div class="adjust_box" style="height:420px;">
 	<div class="box_inner">
 	
-	<form class="registerform" id="registerForm" method="post" enctype="multipart/form-data">
+	<form class="registerform" id="registerForm" action="<%=basePath%>/uploadFile/uploadPicMethod" method="post" enctype="multipart/form-data">
 	
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		<input type="hidden" name="parameterName" id="parameterName" value="${_csrf.parameterName}" />
@@ -32,12 +32,12 @@
 		            <th style="width:15%;"><span style="color: red;">*</span>商品图片：</th>
 		            <td style="width:35%;">
 		            	<input type="hidden" id="goodsImage" name="goods.goodsImage" />
-		            	<input type="file" id="pic" value="点击上传" onchange="uploadPic()"/>
+		            	<input type="file" name="file" id="pic" value="点击上传" onchange="savePic(this)"/>
 		            </td>
 		       </tr> 
 		       <tr>
 		        	<th style="width:15%;"><span style="color: red;">*</span>商品名称：</th>
-		            <td style="width:35%;"><input type="text" name="goods.goodsName" class="form_text" reg="Require" tip="请填写分类名称" /></td>
+		            <td style="width:35%;"><input type="text" name="goods.goodsName" class="form_text" reg="Require" tip="请填写商品名称" /></td>
 		       </tr>
 		       <tr>
 		      	    <th style="width:15%;">是否有折扣：</th>

@@ -10,6 +10,13 @@ import com.chengqing.service.base.BaseService;
  */
 public interface UserService extends BaseService<User> {
 	
+	/**
+	 * 校验用户名是否存在
+	 * @param user
+	 * @return
+	 */
+	Long queryCountByUserName(User user);
+	
 	
 	
 }

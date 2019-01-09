@@ -93,7 +93,7 @@ public class GoodsController  extends BaseController<Goods>{
 	 * @return
 	 */
 	@RequestMapping(value="/editGoods", method = RequestMethod.GET)
-	public ModelAndView edit(@ModelAttribute  Goods goods,Model model) {
+	public ModelAndView editGoods(@ModelAttribute  Goods goods,Model model) {
 		// 查询所有没有下架的商品分类
 		Classify classify = new Classify();
 		classify.setClassifyStatus(0);
@@ -108,7 +108,7 @@ public class GoodsController  extends BaseController<Goods>{
 		}
 		model.addAttribute("listClassify", listClassify);
 		model.addAttribute("goods", goods);
-		return new ModelAndView("/shopping/goods/edit");
+		return new ModelAndView("/shopping/goods/editGoods");
 	}
 	
 	/**

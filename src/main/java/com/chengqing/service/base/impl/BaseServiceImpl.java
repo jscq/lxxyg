@@ -108,6 +108,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
 				getBaseDao().updateByIdSelective(t);
 			}else{
 				// TODO 创建人
+				t.setCreateTime(new Date());
 				getBaseDao().insert(t);
 			}
 			result.setStatus(Status.OK);

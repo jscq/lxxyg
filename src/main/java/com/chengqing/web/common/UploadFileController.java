@@ -62,11 +62,8 @@ public class UploadFileController {
 					StringBuffer destFName = new StringBuffer();
 					
 					//每个模块存放的图片路径也不一样,只用传递路径名称，不用传递“/”
-					String picPath = request.getParameter("picPath");
-					String applyNo = request.getParameter("applyNo");
 					destFName.append(getRealDir(tomcatPath).replace("web/", "/"))
-						.append(Constant.BASE_PATH + picPath + "/" + new SimpleDateFormat("yyyyMMdd").format(new Date()))
-						.append("/"+applyNo);
+						.append(Constant.BASE_PATH);
 					String path = destFName.toString().replace("\\", "/");
 
 					// 获取上传图片的名称
@@ -105,12 +102,8 @@ public class UploadFileController {
 					StringBuffer destFName = new StringBuffer();
 					
 					//每个模块存放的图片路径也不一样,只用传递路径名称，不用传递“/”
-					String picPath = request.getParameter("picPath");
-					
 					destFName.append(getRealDir(tomcatPath).replace("web/", "/"))
-						.append(Constant.BASE_PATH + picPath + "/"
-									+ new SimpleDateFormat("yyyyMMdd")
-											.format(new Date()));
+						.append(Constant.BASE_PATH);
 					String path = destFName.toString().replace("\\", "/");
 
 					// 获取上传图片的名称

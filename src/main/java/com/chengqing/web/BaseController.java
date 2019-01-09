@@ -21,6 +21,7 @@ import com.chengqing.utils.PageControl;
 import com.chengqing.utils.ResData;
 import com.chengqing.utils.Result;
 import com.chengqing.utils.StringEditor;
+import com.chengqing.utils.Result.Status;
 
 /**
  * 基础controller
@@ -70,6 +71,8 @@ public abstract class BaseController<T extends BaseModel> implements Serializabl
 		return res;
 	}
 	
+	
+
 //	 /**  
 //		 * 列表
 //		 * 
@@ -132,16 +135,14 @@ public abstract class BaseController<T extends BaseModel> implements Serializabl
 //		 *
 //		 */
 //		@ResponseBody
-//		@RequestMapping(value="/delete", method = RequestMethod.GET)
-//		public Result delete(@ModelAttribute  ) {
-//			Result result = new Result();
+//		@RequestMapping(value="/delete", method = RequestMethod.POST)
+//		public Result delete(String ids) {
 //			try {
 //				
-//				result.setStatus(Status.OK);
 //			} catch (Exception e) {
 //				return new Result(Status.ERROR,e.getMessage());
 //			}
-//			return result;
+//			return new Result(Status.OK,"");
 //		}
 	
 }

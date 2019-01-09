@@ -24,6 +24,10 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 	protected BaseDao<User> getBaseDao() {
 		return this.userDao;
 	}
+
+	public Long queryCountByUserName(User user) {
+		return userDao.queryCountByUserName(user);
+	}
 	
 	
 }

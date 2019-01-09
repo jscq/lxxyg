@@ -77,7 +77,7 @@ function edit(){
 		return;
 	}
 	var id = rows[0].id;
-	add(Utils.getRootPath()+'/goods/editGoods?goods.id='+id,'编辑商品',850,500); 
+	add(Utils.getRootPath()+'/goods/editGoods?goods.id='+id,'编辑商品',460,510); 
 };
 
   
@@ -157,8 +157,8 @@ function jisuanZheKou(){
 	var goodsPrice = $("#goodsPrice").val()
 
 	if(goodsOriginalPrice != '' && goodsOriginalPrice != 0  && goodsPrice != '' && goodsPrice != 0 ){
-		$("#zhekou").text(Math.ceil(goodsPrice * 10/goodsOriginalPrice))
-		$("#goodsDiscount").val(Math.ceil(goodsOriginalPrice * 10/goodsPrice))
+		$("#zhekou").text(Digit.round(goodsPrice * 10/goodsOriginalPrice,1))
+		$("#goodsDiscount").val(Digit.round(goodsOriginalPrice * 10/goodsPrice,1))
 	}
 }
 
@@ -185,6 +185,7 @@ function savePic(obj){
 	var fileName = imgName.substring(pos+1);
 	//处理图片路径
 	imgName = getFileName(imgName);
+	
 	if(fileName == "jpg" || fileName == "JPG" 
 		|| fileName == "jpeg" || fileName == "JPEG" 
 		|| fileName == "png" || fileName == "PNG" 
@@ -193,24 +194,16 @@ function savePic(obj){
 		if(navigator.userAgent.indexOf("MSIE")>0) {//是IE
 			
 			//var version = $.browser.version;
-			$("#upform").ajaxSubmit(function(result){
+
+			$("#registerForm").ajaxSubmit(function(result){
 				result = result.replace("<pre>","");
 				result = result.replace("<PRE>","");
 				result = result.replace("</pre>","");
 				result = result.replace("</PRE>","");
 				var resultObj = eval('('+result+')');
+				
 	            if (resultObj.msg == "success"){
-	            	$("#supplyAttName").attr("value", resultObj.fileName);
-	            	$("#supplyAttPath").attr("value", resultObj.filePath);
-	            	$("#supplyDocName").attr("value", resultObj.documentName);
-	            	
-	            	$.messager.alert('提示','图片上传成功！','info');
-	            	$('#showPic').window('close');
-	            	
-	            	$("#pmPic").html('');
-	            	var imgPath =  Utils.getBasePath() + "/"+resultObj.filePath.substring(resultObj.filePath.indexOf('uploadPic'))+"/" +  resultObj.fileName;
-	            	var html='<a href="javascript:void(0)" style="color:blue;" onclick=window.open("'+imgPath+'")>【预览】</a><a href="javascript:void(0)" style="color:blue;" onclick="removePic()")>【删除】</a>';
-	            	$('#pmPic').html(html);
+	            	$("#goodsImage").val(resultObj.filePath + resultObj.fileName);
 	            } else if(resultObj.msg == "fail"){
 	            	$.messager.alert('提示','图片文件大小不得小于20K或大于5M！','warning');
 	            	file = $("#chooseimg");
@@ -228,22 +221,14 @@ function savePic(obj){
 		
 		}else{//不是IE
 			
-			$("#upform").ajaxSubmit(function(result){
+			//var version = $.browser.version;
+			
+			$("#registerForm").ajaxSubmit(function(result){
 				result = result.substring(result.indexOf("{"),result.indexOf("}")+1);
 				var resultObj = eval('('+result+')');
 				
 	            if (resultObj.msg == "success"){
-	            	$("#supplyAttName").attr("value", resultObj.fileName);
-	            	$("#supplyAttPath").attr("value", resultObj.filePath);
-	            	$("#supplyDocName").attr("value", resultObj.documentName);
-	            	
-	            	$.messager.alert('提示','图片上传成功！','info');
-	            	$('#showPic').window('close');
-	            	
-	            	$("#pmPic").html('');
-	            	var imgPath =  Utils.getBasePath() + "/"+resultObj.filePath.substring(resultObj.filePath.indexOf('uploadPic'))+"/" +  resultObj.fileName;
-	            	var html='<a href="javascript:void(0)" style="color:blue;" onclick=window.open("'+imgPath+'")>【预览】</a><a href="javascript:void(0)" style="color:blue;" onclick="removePic()")>【删除】</a>';
-	            	$('#pmPic').html(html);
+	            	$("#goodsImage").val(resultObj.filePath + resultObj.fileName);
 	            } else if(resultObj.msg == "fail"){
 	            	$.messager.alert('提示','图片文件大小不得小于20K或大于5M！','warning');
 	            	file = $("#chooseimg");
@@ -270,7 +255,11 @@ function savePic(obj){
 }
 
 
-function uploadPic(){
-	$("#goodsImage").val("123")
+//图片路径处理
+function getFileName(path){
+	var pos1 = path.lastIndexOf('/');
+	var pos2 = path.lastIndexOf('\\');
+	var pos = Math.max(pos1, pos2);
+	return path.substring(pos+1);
 }
 

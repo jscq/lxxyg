@@ -13,6 +13,10 @@ var loadDataGrid = function(type)
 	{	
 		// 系统管理模块---行政区域管理
 		$(window.parent.document).contents().find("#iframe")[0].contentWindow.searchArea();
+	}else if(type=='user')
+	{	
+		// 系统管理模块---系统用户管理
+		$(window.parent.document).contents().find("#iframe")[0].contentWindow.searchUser();
 	}
 	
 	else if(type=='classify')

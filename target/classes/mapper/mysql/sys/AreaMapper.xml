@@ -40,7 +40,11 @@
 			</trim>
 		</where>
 		
-		order by code
+		<if test="start != null and rows != null">
+			order by code asc
+		
+			limit #{start}, #{rows}
+		</if>
 	</sql>
 	
 	<!-- 查询总数 -->

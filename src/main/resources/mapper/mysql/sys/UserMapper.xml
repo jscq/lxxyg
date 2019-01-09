@@ -9,20 +9,26 @@
 
 	<resultMap id="BaseResultMap" type="com.chengqing.model.sys.User">
 		<id column="id" property="id" jdbcType="VARCHAR" />
-		<result column="username" property="username" jdbcType="VARCHAR" />
-		<result column="password" property="password" jdbcType="VARCHAR" />
-		<result column="userType" property="userType" jdbcType="VARCHAR" />
+		<result column="userName" property="userName" jdbcType="VARCHAR" />
+		<result column="passWord" property="passWord" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<sql id="Base_Column_List">
 		id as id,
+		version as version,
+		createTime as createTime,
+		updateTime as updateTime,
+		createUserId as createUserId,
+		updateUserId as updateUserId,
+		validFrom as validFrom,
+		validTo as validTo,
+		sn as sn,
 		userName as userName,
-		passWord as passWord,
-		userType as userType
+		passWord as passWord
 	</sql>
 	
 	<!-- 校验用户名  -->
-	<select id="selectByUserName" resultType="java.util.Map" parameterType="java.lang.String">
+	<select id="selectByUserName" resultType="java.lang.Long" parameterType="java.lang.String">
 		select 
 			count(id)
 		from user
@@ -37,6 +43,37 @@
 		where id = #{id}
 	</select>
 	
+	<!-- 查询list -->
+	<select id="select" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 查询count  -->
+	<select id="selectCount" resultType="java.lang.Long" parameterType="java.lang.String">
+		select 
+			count(id)
+		from user
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+				<if test="null!=userName and ''!=userName">and userName like CONCAT('%',#{userName},'%')</if>
+			</trim>
+		</where>
+		
+		<if test="start != null and rows != null">
+			order by createTime asc
+		
+			limit #{start}, #{rows}
+		</if>
+	</sql>
+	
 	<!-- 根据ID删除 -->
 	<delete id="deleteById" parameterType="java.lang.String">
 		delete from user
@@ -47,15 +84,25 @@
 	<insert id="insert" parameterType="com.chengqing.model.sys.User">
 		insert into user (
 			id, 
+			version, 
+			createTime,
+			createUserId,
+			validFrom,
+			validTo,
+			sn,
 			userName,
-			passWord,
-			userType
+			passWord
 		)
 		values (
 			#{id},
+			#{version}, 
+			#{createTime},
+			#{createUserId},
+			#{validFrom},
+			#{validTo},
+			#{sn},
 			#{userName},
-			#{passWord},
-			#{userType}
+			#{passWord}
 		)
 	</insert>
 	

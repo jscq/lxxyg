@@ -55,7 +55,7 @@
 	<!-- 根据ID查询 -->
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
 		select
-		<include refid="Base_Column_List" />
+			a.*
 		from goods a
 		where a.id = #{id}
 	</select>	

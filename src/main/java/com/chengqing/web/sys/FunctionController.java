@@ -52,6 +52,11 @@ public class FunctionController extends BaseController  {
     @Autowired
     private FunctionService functionService;
     
+	protected BaseService getBaseService() {
+		return functionService;
+	}
+	
+    
     /**  
 	 * 系统菜单list页面   
 	 */
@@ -196,10 +201,5 @@ public class FunctionController extends BaseController  {
 		}
 		return new Result(Status.ERROR,"");
 	}
-	@Override
-	protected BaseService getBaseService() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+
 }

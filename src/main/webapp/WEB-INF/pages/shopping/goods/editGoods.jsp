@@ -15,30 +15,68 @@
 	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	<input type="hidden" name="parameterName" id="parameterName" value="${_csrf.parameterName}" />
 	<input type="hidden" name="token" id="token" value="${_csrf.token}" />
-	<input type="hidden" id="id" value="${classify.id }" name="classify.id" />
-	<input type="hidden" id="hiddenClassifyName" value="${classify.classifyName }" name="hiddenClassifyName" />
-		
+	<input type="hidden" id="id" value="${goods.id }" name="classify.id" />
+	
 		<div class="cell">
 			<table border="0" cellpadding="0" cellspacing="0">
-		       <tr>
-		        	<th><span style="color: red;">*</span>分类名称：</th>
-		            <td><input type="text" id="classifyName" value="${classify.classifyName }" name="classify.classifyName" class="form_text" maxlength="25" reg="Require" tip="请填写分类名称" /></td>
-		            
-		            <th>分类编码：</th>
-		            <td><input type="text" value="${classify.classifyCode }" name="classify.classifyCode" class="form_text"/></td>
+				<tr>
+		        	<th style="width:15%;"><span style="color: red;">*</span>所属分类：</th>
+		            <td style="width:35%;">
+		            	<select name="goods.classify.id" id="classifyId" value="${goods.classify.id }" style="width:90%;vertical-align: middle;">
+		            		<option value="">--请选择所属分类--</option>
+		            		<c:forEach items="${listClassify}" var="classify">
+		            			<c:if test="${goods.classify.id eq classify.id}">
+		            				<option value="${classify.id}" selected="selected">--${classify.classifyName}--</option>
+		            			</c:if>
+		            			<c:if test="${goods.classify.id ne classify.id}">
+		            				<option value="${classify.id}">--${classify.classifyName}--</option>
+		            			</c:if>
+		            		</c:forEach>
+		            	</select>
+		            </td>
+	           </tr> 
+	           <tr>  
+		            <th style="width:15%;"><span style="color: red;">*</span>商品图片：</th>
+		            <td style="width:35%;">
+		            	<input type="text" id="goodsImage" value="${goods.goodsImage }" name="goods.goodsImage" />
+		            	<input type="file" name="file" id="pic" value="点击上传" onchange="savePic(this)"/>
+		            </td>
 		       </tr> 
 		       <tr>
-		        	<th>上下架状态编码：</th>
-		            <td>
-		            	<select name="classifyStatus" value="${classify.classifyStatus} id="classifyStatus" style="width:90%">
-	             			<option value="">--请选择--</option>
-	             			<option value="0">--上架--</option>
-	             			<option value="1">--已下架--</option> 
-	             		</select>
+		        	<th style="width:15%;"><span style="color: red;">*</span>商品名称：</th>
+		            <td style="width:35%;"><input type="text" name="goods.goodsName" value="${goods.goodsName }" class="form_text" reg="Require" tip="请填写商品名称" /></td>
+		       </tr>
+		       <tr>
+		      	    <th style="width:15%;">是否有折扣：</th>
+		            <td style="width:35%;">
+		            	<input name="goods.hasDiscount"  id="hasDiscount" type="radio" value="1"  onclick="selectDiscount(this.value)"/>是
+	            		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	            		<input name="goods.hasDiscount"  id="hasDiscount" type="radio" value="2" checked="checked"   onclick="selectDiscount(this.value)"/>否
 		            </td>
-		            
-		            <th>排序号：</th>
-		            <td><input type="text" value="${classify.sn }" name="classify.sn" class="form_text"/></td>
+		       </tr>
+		       <tr id="originalPrice" style="display:none;">
+		       		<th style="width:15%;"><span style="color: red;">*</span>原价：</th>
+		            <td style="width:35%;"><input type="text" name="goods.goodsOriginalPrice" value="${goods.goodsOriginalPrice }" id="goodsOriginalPrice" onblur="jisuanZheKou()" class="form_text"/></td>
+		       </tr>
+		       <tr>
+		       		<th style="width:15%;"><span style="color: red;">*</span>售价：</th>
+		            <td style="width:35%;"><input type="text" name="goods.goodsPrice" id="goodsPrice" value="${goods.goodsPrice }" onblur="jisuanZheKou()" class="form_text" reg="Require" tip="请填写销售价格" /></td>
+		       </tr>
+		       <tr id="discount" style="display:none;">
+		       		<th style="width:15%;">折扣：</th>
+		            <td style="width:35%;"><input type="hidden" name="goods.goodsDiscount" id="goodsDiscount" /><span id="zhekou">${goods.goodsDiscount }</span>折</td>
+		       </tr>
+		       <tr>
+		      	    <th style="width:15%;"><span style="color: red;">*</span>是否长期销售：</th>
+		            <td style="width:35%;">
+		            		<input name="goods.goodsSalable"  id="goodsSalable" type="radio" value="1" checked="checked"  onclick="selectStock(this.value)"/>是
+		            		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		            		<input name="goods.goodsSalable"  id="goodsSalable" type="radio" value="2"  onclick="selectStock(this.value)"/>否
+		            </td>
+		       </tr>
+		       <tr id="stock" style="display:none;">
+		       		<th style="width:15%;"><span style="color: red;">*</span>余量：</th>
+		            <td style="width:35%;"><input type="text" name="goods.goodsResidual" value="${goods.goodsResidual }" class="form_text"/></td>
 		       </tr>
 		   	</table>
 	   	</div>
@@ -46,7 +84,7 @@
 	       	<div class="box_inner_03">
 	       		<div class="btn_area_setl btn_area_bg">
 	       			<a href="#" onclick="save('registerForm','${_csrf.parameterName}','${_csrf.token}')" class="btn_01">保存<b></b></a>
-	   				<a href="#" onclick="loadDataGrid("classify");window.parent.closeWinForm();" class="btn_01">取消<b></b></a>
+	   				<a href="#" onclick="window.parent.closeWinForm();" class="btn_01">取消<b></b></a>
 	       		</div>
 	       	</div>
 	    </div>
