@@ -386,6 +386,7 @@ function  validatePassword(){
 				//验证原始密码的正确性
 				var rsult=validateInitPass(oldpassword);
 				if(rsult == "OK"){
+					
 					var yesOrfault = resetPassword(newPassword1);
 					if(yesOrfault =="OK"){
 						$.messager.alert('提示', '修改成功，请重新登录！',"info", function() {
@@ -408,9 +409,9 @@ function validateInitPass(oldpassword){
 	var dataPass="FAIL";
 	$.ajax({
 		type : "get",
-		url : Utils.getRootPath() + '/auth/user/validateInitPass',
+		url : Utils.getRootPath() + '/user/validateInitPass',
 		data : {
-			"oldpassword" : oldpassword
+			"passWord" : oldpassword
 		},
 		async : false,
 		dataType : 'json',
@@ -431,9 +432,9 @@ function resetPassword(password){
 	var dataPass="FAIL";
 	$.ajax({
 		type : "get",
-		url : Utils.getRootPath() + '/auth/user/resetPassword',
+		url : Utils.getRootPath() + '/user/resetPassword',
 		data : {
-			"password" : password
+			"passWord" : password
 		},
 		async : false,
 		dataType : 'json',

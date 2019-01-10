@@ -25,8 +25,7 @@
 
 	<!-- Scans for application @Components to deploy -->
 	<context:component-scan base-package="com.chengqing.**"></context:component-scan>
-
-
+	
 	<!-- 数据库配置文件位置 -->
 	<context:property-placeholder location="classpath:config/jdbc.properties" />
 	<!-- 配置dbcp数据源 -->

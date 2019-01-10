@@ -1,5 +1,10 @@
 package com.chengqing.web.sys;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chengqing.model.sys.SysQuery;
 import com.chengqing.model.sys.User;
 import com.chengqing.service.base.BaseService;
 import com.chengqing.service.sys.UserService;
@@ -34,6 +38,9 @@ public class UserController  extends BaseController<User> {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private HttpSession httpSession;
 	
 	protected BaseService<User> getBaseService() {
 		return userService;
@@ -131,7 +138,6 @@ public class UserController  extends BaseController<User> {
 	@RequestMapping(value="/resetPassWord", method = RequestMethod.POST)
 	public Result resetPassWord(String ids) {
 		try {
-			// userService.deleteByIds(ids);
 			if(StringUtils.isNotEmpty(ids.toString())){
 				String[] id = ids.toString().split(",");
 				
@@ -173,6 +179,74 @@ public class UserController  extends BaseController<User> {
 
 		}
 		return new Result(Status.ERROR,"");
+	}
+	
+	
+	/**
+	 * 
+	 * 方法说明：验证旧密码 
+	 *    
+	 * @param  参数名称：参数含义     
+	 * @return Result
+	 * @Exception 异常对象  
+	 */
+	@ResponseBody
+	@RequestMapping(value="/validateInitPass",method = RequestMethod.GET)
+	public Result validateInitPass(HttpServletRequest request,@ModelAttribute User user)
+	{	
+		Result result=new Result();
+		
+		if(null != user){
+				try {
+					String testPass = (String) httpSession.getAttribute("passWord");
+					String passWord = Encodes.encodeMD5(user.getPassWord());
+					
+					if(passWord.equalsIgnoreCase(testPass)){
+						result=new Result(Status.OK, "");
+					}else{
+						result=new Result(Status.ERROR, "");
+					}
+					
+				} catch (Exception e) {
+					result=new Result(Status.ERROR, e.getMessage());
+				}
+		}else{
+			result=new Result(Status.ERROR, "");
+		}
+		return result;
+	}
+	
+	
+	
+	/**
+	 * 重置用户密码
+	 * @param userName
+	 * @return
+	 */
+	@RequestMapping(value="/resetPassword",method = RequestMethod.GET)
+	@ResponseBody
+	public Result reSetPassword(HttpServletRequest request,@ModelAttribute User user)
+	{
+		Result result=new Result();
+		
+		if(null != user){
+				try {
+					String passWord = Encodes.encodeMD5(user.getPassWord());
+					
+					String userName = (String) httpSession.getAttribute("userName");
+					user.setUserName(userName);
+					List<User> listUser = userService.selectList(user);
+					if(null != listUser && listUser.size() > 0) {
+						user = listUser.get(0);
+						user.setPassWord(passWord);
+						userService.updateByIdSelective(user);
+						return new Result(Status.OK,"");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		}
+		return new Result(Status.ERROR, "");
 	}
 
 }

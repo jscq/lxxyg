@@ -17,7 +17,7 @@
 		<span style="color:#fff;font-size:14px;">欢迎您：${userName }</span>
 		 <i style="margin-top: 17px;margin-left: 4px;width: 30px;height: 30px" class="ace-icon fa fa-cog"></i><a href="#" onclick="viewPassword()" style="font-size:14px;color:#fff;">修改密码</a>
 	
-		 <i style="margin-top: 17px;margin-left: 4px;width: 30px;height: 30px" class="ace-icon fa fa-power-off"></i><a href="<c:url value='/logout'/>" style="font-size:14px;color:#fff;" >退出系统</a>
+		 <i style="margin-top: 17px;margin-left: 4px;width: 30px;height: 30px" class="ace-icon fa fa-power-off"></i><a href="<c:url value='/index/logout'/>" style="font-size:14px;color:#fff;" >退出系统</a>
 		</div>
 		
 	<div id="upPasswordTitle" title="修改密码提示框" class="easyui-window" style="width:420px;height:250px;">
@@ -30,19 +30,19 @@
 			<tr>
 				<th style="width:30%"><span style="color: red;">*</span>原密码：</th>
 				<td style="width:70%">
-					<input type="password" id="oldPassword" name="oldPassword" class="form_text" placeholder="请填写原密码" maxlength="30" style="height:25px;" />
+					<input type="password" id="oldPassword" name="oldPassword" class="form_text" placeholder="请填写原密码" maxlength="6" style="height:25px;" />
 				</td>
 			</tr>
 			<tr>
 				<th><span style="color: red;">*</span>新密码：</th>
 				<td>
-					<input type="password" id="newPassword1" name="newPassword1" class="form_text" placeholder="请填写新密码" maxlength="30" style="height:25px;" />
+					<input type="password" id="newPassword1" name="newPassword1" class="form_text" placeholder="请填写新密码" maxlength="6" style="height:25px;" />
 				</td>
 			</tr>
 			<tr>
 				<th><span style="color: red;">*</span>确认密码：</th>
 				<td>
-					<input type="password" id="newPassword2" name="newPassword2" class="form_text" placeholder="请填写确认密码" maxlength="30" style="height:25px;" />
+					<input type="password" id="newPassword2" name="newPassword2" class="form_text" placeholder="请填写确认密码" maxlength="6" style="height:25px;" />
 				</td>
 			</tr>
 			</table>

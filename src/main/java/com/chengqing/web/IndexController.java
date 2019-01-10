@@ -5,18 +5,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chengqing.model.sys.Function;
+import com.chengqing.model.sys.User;
 import com.chengqing.service.sys.CodeService;
 import com.chengqing.service.sys.FunctionService;
+import com.chengqing.service.sys.UserService;
+import com.chengqing.utils.Encodes;
 import com.chengqing.utils.Result;
 import com.chengqing.utils.Result.Status;
 
@@ -28,11 +35,16 @@ import com.chengqing.utils.Result.Status;
 @Controller
 @RequestMapping("/index")
 public class IndexController {
-	
 	/**  
 	 * 字典表缓存
 	 */   
 	public static Map CODE_MAP = new HashMap();
+	
+	// 数据绑定
+	@InitBinder("user")
+    public void initFunction(WebDataBinder binder){
+        binder.setFieldDefaultPrefix("user.");
+    }
 	
 	@Autowired
 	private FunctionService functionService;
@@ -40,15 +52,65 @@ public class IndexController {
 	@Autowired
 	private CodeService codeService;
 	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private HttpSession httpSession;
+	
+	/**
+	 * 跳转登录页
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value="/toLogin", method = RequestMethod.GET)
+	public ModelAndView toLogin(User user) {
+		// 首先要判断是不是已登录
+		String name = (String) httpSession.getAttribute("userName");
+		if(StringUtils.isNotEmpty(name)) {
+			// 已登录，跳转首页
+			return new ModelAndView("redirect:/index/toIndex");
+		}else {
+			// 未登录,跳转登录页
+			return new ModelAndView("../../login");
+		}
+	}
+	
 	/**
 	 * 登陆检验
 	 * @param model 前端ui绑定数据类
 	 * @return
 	 */
-	@RequestMapping(value="/login", method = RequestMethod.GET)
-	public ModelAndView login(Model model) {
+	@ResponseBody
+	@RequestMapping(value="/login", method = RequestMethod.POST)
+	public Result login(User user) {
 		try {
+			user.setPassWord(Encodes.encodeMD5(user.getPassWord()));
 			// 用户校验
+			long count = userService.queryCountByUserName(user);
+			if(count == 1) {
+				// 加入session
+				httpSession.setAttribute("userName",user.getUserName());
+				httpSession.setAttribute("passWord",user.getPassWord());
+				return new Result(Status.OK,"");
+			}
+			return new Result(Status.ERROR,"");
+		} catch (Exception e) {
+			return new Result(Status.ERROR,e.getMessage());
+		}
+	}
+	
+	/**
+	 * 后台框架
+	 * @param model 前端ui绑定数据类
+	 * @return
+	 */
+	@RequestMapping(value="/toIndex", method = RequestMethod.GET)
+	public ModelAndView toIndex(Model model) {
+		try {
+			// 用户信息
+			String name = (String) httpSession.getAttribute("userName");
+			model.addAttribute("userName", name);
 			
 			// 功能菜单加载
 			List<Function> returnFunctionList = new ArrayList<Function>();
@@ -75,18 +137,29 @@ public class IndexController {
 	}
 	
 	/**
+	 * 退出
+	 * @param model 前端ui绑定数据类
+	 * @return
+	 */
+	@RequestMapping(value="/logout", method = RequestMethod.GET)
+	public ModelAndView layout(User user) {
+		try {
+			httpSession.removeAttribute("userName");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ModelAndView("redirect:/index/toLogin");
+	}
+	
+	
+	/**
 	 * 后台首页显示
 	 * @param model 前端ui绑定数据类
 	 * @return
 	 */
 	@RequestMapping(value="/index", method = RequestMethod.GET)
 	public ModelAndView index(Model model) {
-		try {
-			
-		} catch (Exception e) {
-			// 加载出错,应该跳转404页面
-			
-		}
+		
 		return new ModelAndView("../../common/building");
 	}
 	

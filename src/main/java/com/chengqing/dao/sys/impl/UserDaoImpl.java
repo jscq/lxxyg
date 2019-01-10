@@ -18,6 +18,7 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao{
 		try {
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("userName", user.getUserName());
+			params.put("passWord", user.getPassWord());
 			return sqlSessionTemplate.selectOne(getSqlName("selectByUserName"), params);
 		} catch (Exception e) {
 			throw new DaoException(String.format("查询对象列表出错！语句：%s", getSqlName("selectByUserName")), e);

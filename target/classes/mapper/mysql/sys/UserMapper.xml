@@ -28,11 +28,12 @@
 	</sql>
 	
 	<!-- 校验用户名  -->
-	<select id="selectByUserName" resultType="java.lang.Long" parameterType="java.lang.String">
+	<select id="selectByUserName" resultType="java.lang.Long" parameterType="java.util.Map">
 		select 
 			count(id)
 		from user
 		where userName = #{userName}
+		<if test=" passWord != null "> and passWord = #{passWord}</if>
 	</select>
 	
 	<!-- 根据ID查询 -->

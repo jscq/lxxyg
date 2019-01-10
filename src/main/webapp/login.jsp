@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
 <%
 String path = request.getContextPath();
 String basePath = path;
 request.setAttribute("basePath",basePath);
 %>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>乐享校园购</title>
@@ -33,8 +33,9 @@ request.setAttribute("basePath",basePath);
 		  <link rel="stylesheet" href="<%=basePath%>/resources/assets/css/ace-ie.min.css" />
 		<![endif]-->
 		
-		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<script src="<%=basePath%>/resources/assets/js/jquery-1.11.3.js"></script>
+		
+		<script type="text/javascript" src="<%=basePath%>/resources/js/jquery-1.7.2.min.js"></script>
+		
 		<!--[if lt IE 9]>
 		<script src="<%=basePath%>/resources/assets/js/html5shiv.js"></script>
 		<script src="<%=basePath%>/resources/assets/js/respond.min.js"></script>
@@ -71,14 +72,14 @@ request.setAttribute("basePath",basePath);
 												<fieldset>
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" class="form-control" placeholder="Username" />
+															<input type="text" class="form-control" id="userName" placeholder="Username" />
 															<i class="ace-icon fa fa-user"></i>
 														</span>
 													</label>
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" class="form-control" placeholder="Password" />
+															<input type="password" class="form-control" id="passWord" placeholder="Password" />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
 													</label>
@@ -93,46 +94,26 @@ request.setAttribute("basePath",basePath);
 
 														<button type="button" class="width-35 pull-right btn btn-sm btn-primary" onclick="login()">
 															<i class="ace-icon fa fa-key"></i>
-															<span class="bigger-110">Login</span>
+															<span class="bigger-110">登录系统</span>
 														</button>
 													</div>
 
 													<div class="space-4"></div>
 												</fieldset>
 											</form>
-
-											<div class="social-or-login center">
-												<span class="bigger-110">Or Login Using</span>
-											</div>
-
-											<div class="space-6"></div>
-
-											<div class="social-login center">
-												<a class="btn btn-primary">
-													<i class="ace-icon fa fa-facebook"></i>
-												</a>
-
-												<a class="btn btn-info">
-													<i class="ace-icon fa fa-twitter"></i>
-												</a>
-
-												<a class="btn btn-danger">
-													<i class="ace-icon fa fa-google-plus"></i>
-												</a>
-											</div>
 										</div><!-- /.widget-main -->
 
 										<div class="toolbar clearfix">
 											<div>
 												<a href="#" data-target="#forgot-box" class="forgot-password-link">
 													<i class="ace-icon fa fa-arrow-left"></i>
-													I forgot my password
+													忘记密码
 												</a>
 											</div>
 
 											<div>
 												<a href="#" data-target="#signup-box" class="user-signup-link">
-													I want to register
+													去注册
 													<i class="ace-icon fa fa-arrow-right"></i>
 												</a>
 											</div>
@@ -165,7 +146,7 @@ request.setAttribute("basePath",basePath);
 													<div class="clearfix">
 														<button type="button" class="width-35 pull-right btn btn-sm btn-danger">
 															<i class="ace-icon fa fa-lightbulb-o"></i>
-															<span class="bigger-110">Send Me!</span>
+															<span class="bigger-110">暂未开放！</span>
 														</button>
 													</div>
 												</fieldset>
@@ -174,7 +155,7 @@ request.setAttribute("basePath",basePath);
 
 										<div class="toolbar center">
 											<a href="#" data-target="#login-box" class="back-to-login-link">
-												Back to login
+												返回登录
 												<i class="ace-icon fa fa-arrow-right"></i>
 											</a>
 										</div>
@@ -235,11 +216,11 @@ request.setAttribute("basePath",basePath);
 													<div class="clearfix">
 														<button type="reset" class="width-30 pull-left btn btn-sm">
 															<i class="ace-icon fa fa-refresh"></i>
-															<span class="bigger-110">Reset</span>
+															<span class="bigger-110">未开放！</span>
 														</button>
 
 														<button type="button" class="width-65 pull-right btn btn-sm btn-success">
-															<span class="bigger-110">Register</span>
+															<span class="bigger-110">暂未开放，期待中！</span>
 
 															<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
 														</button>
@@ -251,7 +232,7 @@ request.setAttribute("basePath",basePath);
 										<div class="toolbar center">
 											<a href="#" data-target="#login-box" class="back-to-login-link">
 												<i class="ace-icon fa fa-arrow-left"></i>
-												Back to login
+												返回登录
 											</a>
 										</div>
 									</div><!-- /.widget-body -->
@@ -282,18 +263,19 @@ request.setAttribute("basePath",basePath);
 
 
 
-		<!--[if !IE]> -->
+		<!--[if !IE]>
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<%=basePath%>/resources/assets/js/jquery.min.js'>"+"<"+"/script>");
 		</script>
-
-		<!-- <![endif]-->
+		<!<![endif]-->
 
 		<!--[if IE]>
-<script type="text/javascript">
- window.jQuery || document.write("<script src='<%=basePath%>/resources/assets/js/jquery1x.min.js'>"+"<"+"/script>");
-</script>
-<![endif]-->
+			<script type="text/javascript">
+			 window.jQuery || document.write("<script src='<%=basePath%>/resources/assets/js/jquery1x.min.js'>"+"<"+"/script>");
+			</script>
+		<![endif]-->
+		
+		
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='<%=basePath%>/resources/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
 		</script>
@@ -309,8 +291,6 @@ request.setAttribute("basePath",basePath);
 			 });
 			});
 			
-			
-			
 			//you don't need this, just used for changing background
 			jQuery(function($) {
 			 $('#btn-login-dark').on('click', function(e) {
@@ -320,6 +300,7 @@ request.setAttribute("basePath",basePath);
 				
 				e.preventDefault();
 			 });
+			 
 			 $('#btn-login-light').on('click', function(e) {
 				$('body').attr('class', 'login-layout light-login');
 				$('#id-text2').attr('class', 'grey');
@@ -340,8 +321,54 @@ request.setAttribute("basePath",basePath);
 			/**
 			 * 登陆
 			 */
-			var login = function(){
-				alert("登陆");
+			 function login(){
+				var userName = $('#userName').val();
+				if (userName == "") {
+					alert("用户名不能为空！");
+					document.getElementById("passWord").value = "";
+					document.getElementById('userName').focus();
+					return;
+
+				}
+				var passWord = $('#passWord').val();
+				if (passWord == "") {
+					alert("密码不能为空！");
+					document.getElementById('passWord').focus();
+					return;
+				}
+
+				var curWwwPath = window.document.location.href;
+				var pathName = window.document.location.pathname;
+				var pos = curWwwPath.indexOf(pathName);
+				var localhostPaht = curWwwPath.substring(0, pos);
+				var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+					
+				
+				var url = (localhostPaht + projectName) + '/index/login';
+
+				console.log(localhostPaht)
+				console.log(projectName)
+				
+				$.ajax({	
+					type: "post",
+			        url:url,
+			        data:{
+						"user.userName" : userName,
+						"user.passWord" : passWord
+					},
+			        async: false,
+			        dataType: 'json',
+					success: function(result){
+						if (result.status == "OK") {
+							window.location.href = (localhostPaht + projectName) + "/index/toIndex";
+						} else if (result.status == "ERROR") {
+							document.getElementById("userName").value = "";
+							document.getElementById("passWord").value = "";		
+							alert("登录失败,请注意您的用户名和密码");
+						}
+					}
+				});
+						
 			};
 		</script>
 	</body>
